@@ -1,0 +1,61 @@
+*:not(h1, h2, h3, h4, h5, h6) {
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: 'Rubik', sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 0.25rem;
+  height: 3px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 0.25rem;
+}
+
+code {
+  padding: 0.05rem 0.25rem;
+}
+
+code.code-block {
+  padding: 0.5rem;
+}
+
+#sidebar {
+  width: 18.75rem;
+}
+
+@media screen and (max-width: 640px) {
+  #sidebar {
+    --translate-x: -18.75rem;
+    transform: translateX(var(--translate-x));
+  }
+}
+
+.sidebar-toggle {
+  margin-top: 0.5rem;
+  margin-left: 0.5rem;
+}
+
+body {
+  overflow: hidden;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+    env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+#sidebar,
+#console {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 24px);
+}
+
+.transparent {
+  background-color: transparent;
+}

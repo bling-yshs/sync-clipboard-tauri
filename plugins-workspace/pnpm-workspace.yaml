@@ -1,0 +1,4 @@
+packages:
+  - plugins/*
+  - plugins/*/examples/*
+  - examples/*

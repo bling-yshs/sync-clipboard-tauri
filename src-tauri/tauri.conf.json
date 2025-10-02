@@ -1,0 +1,48 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "sync-clipboard-tauri",
+  "version": "0.1.0",
+  "identifier": "com.sync-clipboard-tauri.app",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "devUrl": "http://localhost:14200",
+    "beforeBuildCommand": "pnpm build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "sync-clipboard-tauri",
+        "width": 800,
+        "height": 600
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  },
+  "plugins": {
+    "deep-link": {
+      "mobile": [
+        {
+          "host": "sync-clipboard-tauri.app",
+          "pathPrefix": ["/upload-clipboard", "/download-clipboard"]
+        }
+      ],
+      "desktop": {
+        "schemes": ["sync-clipboard"]
+      }
+    }
+  }
+}

@@ -1,0 +1,3 @@
+[default]
+description = "Default permissions for the plugin"
+permissions = ["allow-ping","allow-registerListener","allow-unregister-listener","allow-remove-listener","allow-show-toast","allow-scan-media-file"]

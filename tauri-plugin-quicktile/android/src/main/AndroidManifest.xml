@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <service
+                android:name=".DownloadTileService"
+                android:exported="true"
+                android:icon="@android:drawable/ic_menu_save" android:label="剪贴板下载" android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <service
+                android:name=".UploadTileService"
+                android:exported="true"
+                android:icon="@android:drawable/ic_menu_upload"
+                android:label="剪贴板上传"
+                android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+
+            <!-- 可选：若你做“主动磁贴”，再加这个 -->
+            <!-- <meta-data
+                android:name="android.service.quicksettings.ACTIVE_TILE"
+                android:value="true" /> -->
+        </service>
+
+
+    </application>
+</manifest>

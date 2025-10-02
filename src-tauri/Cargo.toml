@@ -1,0 +1,27 @@
+[package]
+name = "sync-clipboard-tauri"
+version = "0.1.0"
+description = "A Tauri App"
+authors = ["you"]
+edition = "2021"
+
+[lib]
+name = "sync_clipboard_tauri_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2.5.0"
+tauri-plugin-clipboard-manager = { path = "../plugins-workspace/plugins/clipboard-manager" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tauri-plugin-dialog = "2"
+tauri-plugin-quicktile = { path = "../tauri-plugin-quicktile" }
+tauri-plugin-process = "2"
+tauri-plugin-fs = "2"
+tauri-plugin-deep-link = "2"
+tauri-plugin-toast = "0.0.2"
+tauri-plugin-http = "2"
