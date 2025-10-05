@@ -4,6 +4,13 @@
 
 本项目是一个使用 Tauri 和 Vue 构建的安卓客户端应用，作为 [Jeric-X/SyncClipboard](https://github.com/Jeric-X/SyncClipboard) 项目的配套应用，实现跨设备的剪贴板内容同步功能。
 
+## 系统需求
+
+本项目对 [Android System Webview](https://play.google.com/store/apps/details?id=com.google.android.webview&hl=zh&pli=1) 版本需求较高（需要至少 120 以上版本）。如果打开应用发现屏幕一片白，什么信息都没有，请通过应用商店更新 [webview](https://play.google.com/store/apps/details?id=com.google.android.webview&hl=zh&pli=1) 版本。
+
+> [!NOTE]
+> 小米系统可能无法直接更新 webview。需要先在开发者选项中临时关闭系统优化（原 MIUI 优化），安装 webview 更新后再打开系统优化即可。
+
 ## 功能特性
 
 - **剪贴板上传**: 将剪贴板内容上传到 SyncClipboard 服务器
