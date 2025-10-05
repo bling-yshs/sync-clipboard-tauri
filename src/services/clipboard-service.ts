@@ -28,7 +28,7 @@ export const CONFIG_FILE = 'clipboard-sync-config.toml'
  * 默认服务器配置
  */
 export const DEFAULT_CONFIG: ServerConfig = {
-  url: 'https://example.com/',
+  url: '',
   username: '',
   password: '',
 }

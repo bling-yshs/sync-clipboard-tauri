@@ -3,7 +3,6 @@ name: 🛠️ 自动构建 (Commit)
 on:
   push:
     branches:
-      # 仅在 master 和 dev 分支上触发，其他分支请使用 PR 触发
       - main
       - master
       - dev
@@ -16,6 +15,7 @@ jobs:
         include:
           - os: ubuntu-22.04
             target: aarch64-linux-android
+
     name: 🛠️ 自动构建
     runs-on: ${{ matrix.os }}
     steps:
