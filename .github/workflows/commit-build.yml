@@ -1,0 +1,130 @@
+name: 🛠️ 自动构建 (Commit)
+
+on:
+  push:
+    branches:
+      # 仅在 master 和 dev 分支上触发，其他分支请使用 PR 触发
+      - main
+      - master
+      - dev
+
+jobs:
+  commit-build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            target: aarch64-linux-android
+    name: 🛠️ 自动构建
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: 克隆当前仓库 (Clone current repo)
+        uses: actions/checkout@v5
+
+      - name: 安装依赖(Install dependencies)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
+      - name: 安装 Rust (Install Rust)
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust 缓存 (Rust cache)
+        uses: swatinem/rust-cache@v2
+        with:
+          shared-key: ${{ matrix.target }}
+          workspaces: './src-tauri -> target'
+
+      - name: 安装 pnpm (Install pnpm)
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: 安装 Node.js (Install Node.js)
+        uses: actions/setup-node@v5
+        with:
+          node-version: "24.x"
+          cache: "pnpm"
+
+      - name: 安装前端依赖 (Install frontend dependencies)
+        run: pnpm install
+
+      - name: 安装 rust target (Install rust target)
+        run: rustup target add ${{ matrix.target }}
+
+      - name: 安装 Java (Install Java)
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'liberica'
+          java-version: '21'
+
+      - name: 安装 Android SDK (Setup Android SDK)
+        uses: android-actions/setup-android@v3
+
+      - name: 安装 NDK (Install NDK)
+        id: setup-ndk
+        uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: r27d
+          add-to-path: false
+          link-to-sdk: true
+
+      - name: 创建 keystore (Create keystore)
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        working-directory: src-tauri/gen/android
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > app/keystore.jks
+          # 创建 keystore.properties 文件
+          cat > keystore.properties << EOF
+          password=$ANDROID_KEYSTORE_PASSWORD
+          keyAlias=upload
+          storeFile=keystore.jks
+          EOF
+
+      - name: 构建应用 (Build app)
+        run: |
+          pnpm tauri android build --apk --target aarch64
+        env:
+          NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+
+      - name: 上传编译结果到 Artifact (Upload build result to Artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          if-no-files-found: ignore
+          name: '${{ matrix.target }}-${{ github.sha }}'
+          path: |
+            ./src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release.apk
+
+  upload-to-release-alpha:
+    if: github.ref == 'refs/heads/dev'
+    name: 📤 上传到 alpha 版本 (Upload to alpha release)
+    needs: commit-build
+    runs-on: ubuntu-22.04
+    steps:
+      - name: 下载 Artifact (Download Artifact)
+        uses: actions/download-artifact@v5
+        with:
+          path: ./download
+          merge-multiple: true
+
+      - name: 创建 tag (Create tag)
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          custom_tag: alpha
+          tag_prefix: ''
+        continue-on-error: true
+
+      - name: 上传编译结果到 pre-release (Upload build result to pre-release)
+        uses: ncipollo/release-action@v1
+        with:
+          tag: alpha
+          body: ${{ github.event.head_commit.message }}
+          allowUpdates: true
+          removeArtifacts: true
+          prerelease: true
+          artifacts: |
+            ./download/**/*.*
