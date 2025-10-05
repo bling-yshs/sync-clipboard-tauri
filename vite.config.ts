@@ -1,22 +1,22 @@
-import {defineConfig} from "vite";
-import vue from "@vitejs/plugin-vue";
-import tailwindcss from "@tailwindcss/vite";
-import path from "node:path";
+import path from 'node:path'
+import tailwindcss from '@tailwindcss/vite'
+import vue from '@vitejs/plugin-vue'
+import { defineConfig } from 'vite'
 
-const host = process.env.TAURI_DEV_HOST;
+const host = process.env.TAURI_DEV_HOST
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
-  plugins: [
-    vue(),
-    tailwindcss()
-  ],
-  
+  plugins: [vue(), tailwindcss()],
+
   // 2. 配置 resolve.alias
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      '@tauri-apps/plugin-clipboard-manager': path.resolve(__dirname, './plugins-workspace/plugins/clipboard-manager/guest-js/index.ts'),
+      '@tauri-apps/plugin-clipboard-manager': path.resolve(
+        __dirname,
+        './plugins-workspace/plugins/clipboard-manager/guest-js/index.ts',
+      ),
       'tauri-plugin-quicktile-api': path.resolve(__dirname, './tauri-plugin-quicktile/guest-js/index.ts'),
     },
   },
@@ -31,14 +31,14 @@ export default defineConfig(async () => ({
     host: host || false,
     hmr: host
       ? {
-        protocol: "ws",
-        host,
-        port: 14211,
-      }
+          protocol: 'ws',
+          host,
+          port: 14211,
+        }
       : undefined,
     watch: {
       // 3. tell vite to ignore watching `src-tauri`
-      ignored: ["**/src-tauri/**"],
+      ignored: ['**/src-tauri/**'],
     },
   },
-}));
+}))

@@ -1,5 +1,6 @@
+// biome.jsonc
 {
-  "$schema": "https://biomejs.dev/schemas/2.2.0/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
   "overrides": [
     {
       "includes": ["**/*.svelte", "**/*.astro", "**/*.vue"],
@@ -23,7 +24,7 @@
     "useIgnoreFile": false
   },
   "files": {
-    "includes": ["**/src/**", "!**/components", "!**/src/assets/main.css"],
+    "includes": ["vite.config.ts", "src/**", "!src/components", "!src/assets/main.css"],
     "ignoreUnknown": false
   },
   "formatter": {

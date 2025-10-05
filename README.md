@@ -17,14 +17,15 @@
 1. 下载最新版本的 [sync-clipboard-tauri](https://github.com/bling-yshs/sync-clipboard-tauri/releases/latest) 并安装
 2. 打开 app，填写 SyncClipboard 服务器信息（支持 webdav 服务器）
 
-    <img src="https://raw.githubusercontent.com/bling-yshs/ys-image-host/main/img/PixPin_2025-10-05_13-35-50.jpg" title="pic1" style="zoom:10%" alt="pic"/>
+    <img height="500" src="https://raw.githubusercontent.com/bling-yshs/ys-image-host/main/img/PixPin_2025-10-05_13-35-50.jpg" alt="pic"/>
+
 3. 打开控制中心，添加磁贴「剪贴板上传」与「剪贴板下载」
-    
-    <img src="https://raw.githubusercontent.com/bling-yshs/ys-image-host/main/img/PixPin_2025-10-05_13-41-13.jpg"  style="zoom:10%" alt="pic"/>
+
+    <img height="500" src="https://raw.githubusercontent.com/bling-yshs/ys-image-host/main/img/PixPin_2025-10-05_13-41-13.jpg"  alt="pic"/>
 
 4. 点击磁贴开始使用
 
-    <img src="https://raw.githubusercontent.com/bling-yshs/ys-image-host/main/img/Screenshot_20251005_133057.jpg"  style="zoom:10%" alt="pic"/>
+    <img height="500" src="https://raw.githubusercontent.com/bling-yshs/ys-image-host/main/img/Screenshot_20251005_133057.jpg"  alt="pic"/>
 
 ## 项目结构
 
@@ -44,4 +45,4 @@ sync-clipboard-tauri/
 
 ## 许可证
 
-本项目采用开源许可证，详情请参阅 [LICENSE](LICENSE) 文件。
+本项目采用 [MIT](LICENSE) 开源许可证。

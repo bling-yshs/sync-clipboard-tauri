@@ -1,10 +1,10 @@
 {
+  "extends": "@tsconfig/node24/tsconfig.json", // 建议继承
+  "include": ["vite.config.ts"],
   "compilerOptions": {
     "composite": true,
-    "skipLibCheck": true,
     "module": "ESNext",
-    "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true
-  },
-  "include": ["vite.config.ts"]
+    "moduleResolution": "Bundler",
+    "types": ["node"]
+  }
 }
