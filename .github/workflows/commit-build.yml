@@ -110,18 +110,11 @@ jobs:
           path: ./download
           merge-multiple: true
 
-      - name: 创建 tag (Create tag)
-        uses: mathieudutour/github-tag-action@v6.2
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          custom_tag: alpha
-          tag_prefix: ''
-        continue-on-error: true
-
       - name: 上传编译结果到 pre-release (Upload build result to pre-release)
         uses: ncipollo/release-action@v1
         with:
           tag: alpha
+          commit: ${{ github.sha }}
           body: ${{ github.event.head_commit.message }}
           allowUpdates: true
           removeArtifacts: true
