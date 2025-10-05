@@ -24,7 +24,6 @@
     "@types/crypto-js": "^4.2.2",
     "crypto-js": "^4.2.0",
     "fflate": "^0.8.2",
-    "rolldown-vite": "^7.1.4",
     "smol-toml": "^1.4.2",
     "tauri-plugin-quicktile-api": "file:tauri-plugin-quicktile",
     "vconsole": "^3.15.1"
