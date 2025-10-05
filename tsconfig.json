@@ -1,24 +1,7 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "strict": true,
-    "jsx": "preserve",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "skipLibCheck": true,
-    "noEmit": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"],
-      "@tauri-apps/plugin-clipboard-manager": ["plugins-workspace/plugins/clipboard-manager/guest-js/index.ts"],
-      "tauri-plugin-quicktile-api": ["tauri-plugin-quicktile/guest-js/index.ts"]
-    }
-  },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "plugins-workspace/plugins/*/guest-js/index.ts", "tauri-plugin-quicktile/guest-js/index.ts"],
-  "exclude": ["src-tauri", "node_modules", "dist"]
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
 }
