@@ -22,7 +22,7 @@
           <Input
             v-model="serverConfig.url"
             type="url"
-            placeholder="https://your-SyncClipboard-server.com"
+            placeholder="输入服务器地址"
           />
         </div>
         <div class="space-y-2">

@@ -10,10 +10,21 @@
 - **剪贴板下载**: 从 SyncClipboard 服务器下载文本并写入到剪贴板
 - **文件同步**: 支持单个文件的上传和下载
 - **文件组下载**: 支持 group 类型的下载（但是不支持 group 的上传，这个需求很难实现也很小众）
+- **即用即走**: 上传/下载剪贴板以后，将自动退出 app（可在设置里配置延迟时间）
 
 ## 使用步骤
 
-（待用户补充）
+1. 下载最新版本的 [sync-clipboard-tauri](https://github.com/bling-yshs/sync-clipboard-tauri/releases/latest) 并安装
+2. 打开 app，填写 SyncClipboard 服务器信息（支持 webdav 服务器）
+
+    <img src="https://raw.githubusercontent.com/bling-yshs/ys-image-host/main/img/PixPin_2025-10-05_13-35-50.jpg" title="pic1" style="zoom:10%" alt="pic"/>
+3. 打开控制中心，添加磁贴「剪贴板上传」与「剪贴板下载」
+    
+    <img src="https://raw.githubusercontent.com/bling-yshs/ys-image-host/main/img/PixPin_2025-10-05_13-41-13.jpg"  style="zoom:10%" alt="pic"/>
+
+4. 点击磁贴开始使用
+
+    <img src="https://raw.githubusercontent.com/bling-yshs/ys-image-host/main/img/Screenshot_20251005_133057.jpg"  style="zoom:10%" alt="pic"/>
 
 ## 项目结构
 

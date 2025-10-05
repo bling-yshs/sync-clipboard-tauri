@@ -28,7 +28,7 @@
             </div>
           </div>
           <div class="text-xs text-gray-500 ml-24">
-            输入 0 表示立即退出，支持小数（如 1.5 秒）
+            输入 0 表示立即退出，支持小数（如 1.5）
           </div>
         </div>
       </div>
