@@ -10,6 +10,7 @@ Default permissions for the plugin
 - `allow-remove-listener`
 - `allow-show-toast`
 - `allow-scan-media-file`
+- `allow-exit`
 
 ## Permission Table
 
@@ -19,6 +20,32 @@ Default permissions for the plugin
 <th>Description</th>
 </tr>
 
+
+<tr>
+<td>
+
+`quicktile:allow-exit`
+
+</td>
+<td>
+
+Enables the exit command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`quicktile:deny-exit`
+
+</td>
+<td>
+
+Denies the exit command without any pre-configured scope.
+
+</td>
+</tr>
 
 <tr>
 <td>

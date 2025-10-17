@@ -1,8 +1,8 @@
-use tauri::{AppHandle, command, Runtime};
+use tauri::{command, AppHandle, Runtime};
 
 use crate::models::*;
-use crate::Result;
 use crate::QuicktileExt;
+use crate::Result;
 
 #[command]
 pub(crate) async fn ping<R: Runtime>(
@@ -28,4 +28,7 @@ pub(crate) async fn show_toast<R: Runtime>(
     app.quicktile().show_toast(payload)
 }
 
-
+#[command]
+pub(crate) async fn exit<R: Runtime>(app: AppHandle<R>) -> Result<()> {
+    app.quicktile().exit()
+}
