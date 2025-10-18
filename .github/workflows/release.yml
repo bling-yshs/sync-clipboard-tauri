@@ -10,6 +10,7 @@ jobs:
   # =======================================================
   validate:
     name: 1. 校验版本号 (Validate Version)
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     outputs:
       new_version: ${{ steps.compare.outputs.new_version }}
@@ -22,12 +23,12 @@ jobs:
         with:
           fetch-depth: 0 # 必须获取所有 tags 才能比较
 
-      - name: 读取 Cargo.toml 版本 (Read Cargo.toml version)
-        id: cargo
+      - name: 读取 tauri.conf.json 版本 (Read tauri.conf.json version)
+        id: tauri_version
         run: |
-          # 从 toml 中提取 version = "0.1.1" -> 0.1.1
-          VERSION=$(grep '^version = ' ./src-tauri/Cargo.toml | awk '{print $3}' | tr -d '"')
-          echo "cargo_version=$VERSION" >> $GITHUB_OUTPUT
+          # 从 json 中提取 "version": "0.1.1" -> 0.1.1
+          VERSION=$(jq -r '.version' ./src-tauri/tauri.conf.json)
+          echo "app_version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: 获取最新的 Git Tag (Get latest Git tag)
         id: latest_tag
@@ -44,35 +45,36 @@ jobs:
       - name: 比较版本号 (Compare versions)
         id: compare
         run: |
-          CARGO_VERSION=${{ steps.cargo.outputs.cargo_version }}
+          APP_VERSION=${{ steps.tauri_version.outputs.app_version }}
           LATEST_TAG_VERSION=${{ steps.latest_tag.outputs.tag }}
           LATEST_TAG_VERSION_NUM=${LATEST_TAG_VERSION#v} # 去掉 'v' -> 0.1.0
           
-          echo "Cargo 版本 (Current): $CARGO_VERSION"
+          echo "App 版本 (Current): $APP_VERSION"
           echo "Git Tag 版本 (Latest): $LATEST_TAG_VERSION_NUM"
           
-          if [ "$CARGO_VERSION" = "$LATEST_TAG_VERSION_NUM" ]; then
-            echo "::error::Cargo.toml 版本 ($CARGO_VERSION) 等于最新的 Tag 版本 ($LATEST_TAG_VERSION_NUM)。请在发布前更新 Cargo.toml。"
+          if [ "$APP_VERSION" = "$LATEST_TAG_VERSION_NUM" ]; then
+            echo "::error::tauri.conf.json 版本 ($APP_VERSION) 等于最新的 Tag 版本 ($LATEST_TAG_VERSION_NUM)。请在发布前更新 tauri.conf.json。"
             exit 1
           fi
           
           # 使用 sort -V 来安全地比较版本号
-          LATEST_VERSION=$(printf "%s\n%s" "$CARGO_VERSION" "$LATEST_TAG_VERSION_NUM" | sort -V | tail -n 1)
+          LATEST_VERSION=$(printf "%s\n%s" "$APP_VERSION" "$LATEST_TAG_VERSION_NUM" | sort -V | tail -n 1)
           
-          if [ "$LATEST_VERSION" != "$CARGO_VERSION" ]; then
-            echo "::error::Cargo.toml 版本 ($CARGO_VERSION) 小于或等于最新的 Tag 版本 ($LATEST_TAG_VERSION_NUM)。请在发布前更新 Cargo.toml。"
+          if [ "$LATEST_VERSION" != "$APP_VERSION" ]; then
+            echo "::error::tauri.conf.json 版本 ($APP_VERSION) 小于或等于最新的 Tag 版本 ($LATEST_TAG_VERSION_NUM)。请在发布前更新 tauri.conf.json。"
             exit 1
           fi
           
           echo "版本校验通过 (Validation passed)!"
-          echo "new_version=$CARGO_VERSION" >> $GITHUB_OUTPUT
-          echo "new_tag=v$CARGO_VERSION" >> $GITHUB_OUTPUT
+          echo "new_version=$APP_VERSION" >> $GITHUB_OUTPUT
+          echo "new_tag=v$APP_VERSION" >> $GITHUB_OUTPUT
 
   # =======================================================
   # JOB 2: 构建并发布 Release
   # =======================================================
   build_and_release:
     name: 2. 构建并发布 (Build and Release)
+    if: github.ref == 'refs/heads/main'
     needs: validate # 依赖 validate job 成功
     runs-on: ubuntu-22.04
     steps:
@@ -188,6 +190,7 @@ jobs:
   # =======================================================
   update_changelog:
     name: 3. 更新 CHANGELOG 并创建 PR (Update CHANGELOG)
+    if: github.ref == 'refs/heads/main'
     needs: [validate, build_and_release] # 必须在发布成功后运行
     runs-on: ubuntu-latest
     steps:
