@@ -8,7 +8,7 @@
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "android-build": "tauri android build --apk --target aarch64",
-    "check": "vue-tsc --noEmit && biome check --write ."
+    "check": "vue-tsc --noEmit -p tsconfig.app.json && biome check --write ."
   },
   "dependencies": {
     "@bling-yshs/tauri-plugin-toast": "^0.0.1",
