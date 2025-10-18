@@ -73,10 +73,16 @@ jobs:
   # JOB 2: 构建并发布 Release
   # =======================================================
   build_and_release:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            target: aarch64-linux-android
     name: 2. 构建并发布 (Build and Release)
     if: github.ref == 'refs/heads/main'
     needs: validate # 依赖 validate job 成功
-    runs-on: ubuntu-22.04
+    runs-on: ${{ matrix.os }}
     steps:
       - name: 克隆当前仓库 (Clone current repo)
         uses: actions/checkout@v5
