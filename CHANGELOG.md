@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.1.1] - 2025-10-18
+
 ### Added
 
 - 文件上传支持多选
@@ -18,5 +20,6 @@
 
 - 第一次正式发布 sync-clipboard-tauri
 
-[Unreleased]: https://github.com/bling-yshs/sync-clipboard-tauri/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/bling-yshs/sync-clipboard-tauri/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/bling-yshs/sync-clipboard-tauri/commits/v0.1.1
 [0.1.0]: https://github.com/bling-yshs/sync-clipboard-tauri/commits/v0.1.0
