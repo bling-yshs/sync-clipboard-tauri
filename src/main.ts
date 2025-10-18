@@ -12,7 +12,9 @@ async function handleDeepLinkUrls(urls?: string[] | null) {
   console.log('收到Deep Link URLs:', urls)
 
   try {
-    const url = new URL(urls[0])
+    const urlString = urls[0]
+    if (!urlString) return
+    const url = new URL(urlString)
     console.log('解析URL:', url.toString())
 
     // 检查是否是上传剪贴板的链接
