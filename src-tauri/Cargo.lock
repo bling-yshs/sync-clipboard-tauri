@@ -4126,6 +4126,7 @@ dependencies = [
  "tauri-plugin-opener",
  "tauri-plugin-process",
  "tauri-plugin-quicktile",
+ "tauri-plugin-sharetarget",
  "tauri-plugin-toast",
 ]
 
@@ -4511,6 +4512,20 @@ dependencies = [
  "tauri",
  "tauri-plugin",
  "thiserror 2.0.17",
+]
+
+[[package]]
+name = "tauri-plugin-sharetarget"
+version = "0.1.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "15a6e4638b6a5492a46847fc9e994df8cfd2dbc1bacc11f15c207d6a2163c341"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin",
+ "thiserror 1.0.69",
 ]
 
 [[package]]

@@ -33,7 +33,7 @@
 import { showToast } from '@bling-yshs/tauri-plugin-toast'
 import { readText } from '@tauri-apps/plugin-clipboard-manager'
 import { fetch } from '@tauri-apps/plugin-http'
-import { exit } from '@tauri-apps/plugin-process'
+import { exit } from 'tauri-plugin-quicktile-api'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { createTextClipboardData, type TextClipboardData } from '@/entities/clipboard-data'
