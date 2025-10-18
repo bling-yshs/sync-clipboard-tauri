@@ -6,9 +6,14 @@ on:
       - main
       - master
       - dev
+  pull_request:
+    branches:
+      - main
+      - master
+      - dev
 
 jobs:
-  commit-build:
+  auto-build:
     strategy:
       fail-fast: false
       matrix:
@@ -42,7 +47,7 @@ jobs:
           version: latest
 
       - name: 安装 Node.js (Install Node.js)
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: "24.x"
           cache: "pnpm"
