@@ -120,10 +120,19 @@ jobs:
 
       - name: 读取 Unreleased Changelog (Read Unreleased Changelog)
         id: changelog_reader
-        uses: mstruebing/read-changelog-action@v1
+        uses: mindsers/changelog-reader-action@v2.2.3
         with:
-          version: 'unreleased'
+          version: 'Unreleased'
           path: './CHANGELOG.md'
+
+      - name: 提取 Unreleased 对比链接 (Extract Unreleased Compare Link)
+        id: changelog_link
+        run: |
+          # 1. 用 grep 找到以 "[Unreleased]:" 开头的行
+          # 2. 用 awk 按空格分割，打印第二个字段 (即 URL)
+          # 3. 将 URL 保存到 GitHub Actions 的 output
+          URL=$(grep "\[Unreleased\]:" CHANGELOG.md | awk '{print $2}')
+          echo "url=$URL" >> $GITHUB_OUTPUT
 
       - name: 上传编译结果到 pre-release (Upload build result to pre-release)
         uses: ncipollo/release-action@v1
@@ -131,7 +140,11 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: alpha
           commit: ${{ github.sha }}
-          body: ${{ steps.changelog_reader.outputs.changes }}
+          body: |
+            ${{ steps.changelog_reader.outputs.description || steps.changelog_reader.outputs.changes }}
+
+            ---
+            **Full Changelog**: ${{ steps.changelog_link.outputs.url }}
           allowUpdates: true
           removeArtifacts: true
           prerelease: true
