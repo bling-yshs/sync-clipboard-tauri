@@ -3,13 +3,9 @@ name: 🛠️ 自动构建
 on:
   push:
     branches:
-      - main
-      - master
       - dev
   pull_request_target:
     branches:
-      - main
-      - master
       - dev
 
 jobs:
