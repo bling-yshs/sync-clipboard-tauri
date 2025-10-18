@@ -94,6 +94,7 @@ import { open } from '@tauri-apps/plugin-dialog'
 import { readFile } from '@tauri-apps/plugin-fs'
 import { fetch } from '@tauri-apps/plugin-http'
 import CryptoJS from 'crypto-js'
+import { zipSync } from 'fflate'
 import { EyeIcon, EyeOffIcon, Loader2Icon } from 'lucide-vue-next'
 import { onMounted, ref } from 'vue'
 import { Button } from '@/components/ui/button'
@@ -184,93 +185,103 @@ function calculateMD5(fileData: Uint8Array): string {
 async function uploadFile() {
   isUploading.value = true
   try {
-    console.log('开始文件选择...')
-
-    // 使用提供的代码实现文件选择
-    const selectedFile = await open({
-      multiple: false,
+    const selectedFiles = await open({
+      multiple: true,
       directory: false,
     })
 
-    console.log('********选择的文件路径为********')
-    console.log(selectedFile)
-
-    if (selectedFile == null) {
-      console.log('用户取消了文件选择')
+    if (selectedFiles === null || selectedFiles.length === 0) {
+      console.log('用户取消了文件选择或未选择任何文件')
+      isUploading.value = false
       return
     }
 
-    // 读取文件内容（返回Uint8Array格式）
-    console.log('正在读取文件内容...')
-    const fileData = new Uint8Array(await readFile(selectedFile))
-    console.log('文件数据类型:', typeof fileData)
-    console.log('文件大小:', fileData.length, '字节')
-
-    // 提取文件名
-    const filename = await basename(selectedFile)
-    console.log('文件名:', filename)
-
-    // 判断文件类型
-    const fileType = isImageFile(filename) ? 'Image' : 'File'
-    console.log('文件类型:', fileType)
-
-    // 计算MD5哈希值
-    console.log('正在计算MD5哈希值...')
-    const md5Hash = calculateMD5(fileData)
-    console.log('MD5哈希值:', md5Hash)
-
-    // 构造JSON数据
-    const jsonData = {
-      Type: fileType,
-      Clipboard: md5Hash, // MD5哈希值作为可选字段
-      File: filename,
-    }
-
-    console.log('构造的JSON数据:', jsonData)
-
-    // 加载服务器配置
     await loadConfig()
-
-    // 创建Basic Auth header
     const credentials = btoa(`${serverConfig.value.username}:${serverConfig.value.password}`)
 
-    // 1. 首先上传文件到服务器的/file文件夹
-    console.log('正在上传文件到服务器...')
-    const fileUploadUrl = `${serverConfig.value.url.replace(/\/+$/, '')}/file/${filename}`
-    const fileUploadResponse = await fetch(fileUploadUrl, {
-      method: 'PUT',
-      headers: {
-        Authorization: `Basic ${credentials}`,
-        'Content-Type': 'application/octet-stream',
-      },
-      body: fileData,
-    })
+    if (selectedFiles.length === 1) {
+      // --- 单文件上传逻辑 ---
+      const filePath = selectedFiles[0]
+      if (!filePath) {
+        throw new Error('File path is undefined.')
+      }
+      const fileData = new Uint8Array(await readFile(filePath))
+      const filename = await basename(filePath)
+      const fileType = isImageFile(filename) ? 'Image' : 'File'
+      const md5Hash = calculateMD5(fileData)
 
-    if (!fileUploadResponse.ok) {
-      throw new Error(`文件上传失败: HTTP ${fileUploadResponse.status}: ${fileUploadResponse.statusText}`)
+      // 1. 上传文件
+      const fileUploadUrl = `${serverConfig.value.url.replace(/\/+$/, '')}/file/${filename}`
+      const fileUploadResponse = await fetch(fileUploadUrl, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Basic ${credentials}`,
+          'Content-Type': 'application/octet-stream',
+        },
+        body: new Blob([fileData]),
+      })
+
+      if (!fileUploadResponse.ok) {
+        throw new Error(`文件上传失败: HTTP ${fileUploadResponse.status}: ${fileUploadResponse.statusText}`)
+      }
+
+      // 2. 发送JSON
+      const jsonData = { Type: fileType, Clipboard: md5Hash, File: filename }
+      const jsonResponse = await fetch(fullFileUrl.value, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Basic ${credentials}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(jsonData),
+      })
+
+      if (!jsonResponse.ok) {
+        throw new Error(`JSON数据发送失败: HTTP ${jsonResponse.status}: ${jsonResponse.statusText}`)
+      }
+      await showToast('文件上传成功')
+    } else {
+      // --- 多文件上传逻辑 ---
+      const filesToZip: Record<string, Uint8Array> = {}
+      for (const filePath of selectedFiles) {
+        const fileName = await basename(filePath)
+        filesToZip[fileName] = new Uint8Array(await readFile(filePath))
+      }
+
+      const zippedData = zipSync(filesToZip)
+      const zipFileName = `sync-clipboard-${Date.now()}.zip`
+
+      // 1. 上传ZIP文件
+      const fileUploadUrl = `${serverConfig.value.url.replace(/\/+$/, '')}/file/${zipFileName}`
+      const fileUploadResponse = await fetch(fileUploadUrl, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Basic ${credentials}`,
+          'Content-Type': 'application/octet-stream',
+        },
+        body: new Blob([zippedData as Uint8Array<ArrayBuffer>]),
+      })
+
+      if (!fileUploadResponse.ok) {
+        throw new Error(`ZIP文件上传失败: HTTP ${fileUploadResponse.status}: ${fileUploadResponse.statusText}`)
+      }
+
+      // 2. 发送JSON
+      const jsonData = { Type: 'Group', Clipboard: '', File: zipFileName }
+      const jsonResponse = await fetch(fullFileUrl.value, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Basic ${credentials}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(jsonData),
+      })
+
+      if (!jsonResponse.ok) {
+        throw new Error(`JSON数据发送失败: HTTP ${jsonResponse.status}: ${jsonResponse.statusText}`)
+      }
+      await showToast('文件组上传成功')
     }
-
-    console.log('文件上传成功')
-
-    // 2. 然后发送JSON数据到服务器
-    console.log('正在发送JSON数据到服务器...')
-    const jsonResponse = await fetch(fullFileUrl.value, {
-      method: 'PUT',
-      headers: {
-        Authorization: `Basic ${credentials}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(jsonData),
-    })
-
-    if (!jsonResponse.ok) {
-      throw new Error(`JSON数据发送失败: HTTP ${jsonResponse.status}: ${jsonResponse.statusText}`)
-    }
-
-    console.log('JSON数据发送成功')
-    await showToast('文件上传成功')
-    // 显示成功提示（如果有相应的提示功能）
-    console.log(`文件上传成功!\n文件名: ${filename}\n类型: ${fileType}\nMD5: ${md5Hash.substring(0, 8)}...`)
   } catch (error) {
     console.error('文件上传失败:', error)
     await showToast(`文件上传失败: ${error}`)

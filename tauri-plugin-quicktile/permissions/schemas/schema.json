@@ -295,6 +295,18 @@
       "type": "string",
       "oneOf": [
         {
+          "description": "Enables the exit command without any pre-configured scope.",
+          "type": "string",
+          "const": "allow-exit",
+          "markdownDescription": "Enables the exit command without any pre-configured scope."
+        },
+        {
+          "description": "Denies the exit command without any pre-configured scope.",
+          "type": "string",
+          "const": "deny-exit",
+          "markdownDescription": "Denies the exit command without any pre-configured scope."
+        },
+        {
           "description": "Enables the ping command without any pre-configured scope.",
           "type": "string",
           "const": "allow-ping",
@@ -367,10 +379,10 @@
           "markdownDescription": "Denies the unregister_listener command without any pre-configured scope."
         },
         {
-          "description": "Default permissions for the plugin\n#### This default permission set includes:\n\n- `allow-ping`\n- `allow-registerListener`\n- `allow-unregister-listener`\n- `allow-remove-listener`\n- `allow-show-toast`\n- `allow-scan-media-file`",
+          "description": "Default permissions for the plugin\n#### This default permission set includes:\n\n- `allow-ping`\n- `allow-registerListener`\n- `allow-unregister-listener`\n- `allow-remove-listener`\n- `allow-show-toast`\n- `allow-scan-media-file`\n- `allow-exit`",
           "type": "string",
           "const": "default",
-          "markdownDescription": "Default permissions for the plugin\n#### This default permission set includes:\n\n- `allow-ping`\n- `allow-registerListener`\n- `allow-unregister-listener`\n- `allow-remove-listener`\n- `allow-show-toast`\n- `allow-scan-media-file`"
+          "markdownDescription": "Default permissions for the plugin\n#### This default permission set includes:\n\n- `allow-ping`\n- `allow-registerListener`\n- `allow-unregister-listener`\n- `allow-remove-listener`\n- `allow-show-toast`\n- `allow-scan-media-file`\n- `allow-exit`"
         }
       ]
     }

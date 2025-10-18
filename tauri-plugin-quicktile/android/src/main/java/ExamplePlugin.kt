@@ -159,4 +159,10 @@ class ExamplePlugin(private val activity: Activity): Plugin(activity) {
         super.onResume()
         register()
     }
+
+
+    @Command
+    fun exit(invoke: Invoke) {
+        activity.finishAndRemoveTask()
+    }
 }

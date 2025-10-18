@@ -1,4 +1,4 @@
-name: 🛠️ 自动构建 (Commit)
+name: 🛠️ 自动构建
 
 on:
   push:
@@ -6,9 +6,14 @@ on:
       - main
       - master
       - dev
+  pull_request_target:
+    branches:
+      - main
+      - master
+      - dev
 
 jobs:
-  commit-build:
+  auto-build:
     strategy:
       fail-fast: false
       matrix:
@@ -42,7 +47,7 @@ jobs:
           version: latest
 
       - name: 安装 Node.js (Install Node.js)
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: "24.x"
           cache: "pnpm"
@@ -101,7 +106,7 @@ jobs:
   upload-to-release-alpha:
     if: github.ref == 'refs/heads/dev'
     name: 📤 上传到 alpha 版本 (Upload to alpha release)
-    needs: commit-build
+    needs: auto-build
     runs-on: ubuntu-22.04
     steps:
       - name: 下载 Artifact (Download Artifact)
@@ -110,12 +115,36 @@ jobs:
           path: ./download
           merge-multiple: true
 
+      - name: 克隆仓库 (Checkout repo)
+        uses: actions/checkout@v5
+
+      - name: 读取 Unreleased Changelog (Read Unreleased Changelog)
+        id: changelog_reader
+        uses: mindsers/changelog-reader-action@v2.2.3
+        with:
+          version: 'Unreleased'
+          path: './CHANGELOG.md'
+
+      - name: 提取 Unreleased 对比链接 (Extract Unreleased Compare Link)
+        id: changelog_link
+        run: |
+          # 1. 用 grep 找到以 "[Unreleased]:" 开头的行
+          # 2. 用 awk 按空格分割，打印第二个字段 (即 URL)
+          # 3. 将 URL 保存到 GitHub Actions 的 output
+          URL=$(grep "\[Unreleased\]:" CHANGELOG.md | awk '{print $2}')
+          echo "url=$URL" >> $GITHUB_OUTPUT
+
       - name: 上传编译结果到 pre-release (Upload build result to pre-release)
         uses: ncipollo/release-action@v1
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           tag: alpha
           commit: ${{ github.sha }}
-          body: ${{ github.event.head_commit.message }}
+          body: |
+            ${{ steps.changelog_reader.outputs.description || steps.changelog_reader.outputs.changes }}
+
+            ---
+            **Full Changelog**: ${{ steps.changelog_link.outputs.url }}
           allowUpdates: true
           removeArtifacts: true
           prerelease: true

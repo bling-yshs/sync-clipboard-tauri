@@ -27,3 +27,7 @@ export async function scanMediaFile(path: string): Promise<boolean> {
     },
   }).then((r) => r.success || false);
 }
+
+export async function exit(): Promise<void> {
+  await invoke('plugin:quicktile|exit')
+}
