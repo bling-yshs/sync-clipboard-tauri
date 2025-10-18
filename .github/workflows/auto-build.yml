@@ -115,12 +115,23 @@ jobs:
           path: ./download
           merge-multiple: true
 
+      - name: 克隆仓库 (Checkout repo)
+        uses: actions/checkout@v5
+
+      - name: 读取 Unreleased Changelog (Read Unreleased Changelog)
+        id: changelog_reader
+        uses: mstruebing/read-changelog-action@v1
+        with:
+          version: 'unreleased'
+          path: './CHANGELOG.md'
+
       - name: 上传编译结果到 pre-release (Upload build result to pre-release)
         uses: ncipollo/release-action@v1
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           tag: alpha
           commit: ${{ github.sha }}
-          body: ${{ github.event.head_commit.message }}
+          body: ${{ steps.changelog_reader.outputs.changes }}
           allowUpdates: true
           removeArtifacts: true
           prerelease: true
