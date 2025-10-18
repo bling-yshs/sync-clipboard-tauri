@@ -1,4 +1,4 @@
-name: 🛠️ 自动构建 (Commit)
+name: 🛠️ 自动构建
 
 on:
   push:
@@ -106,7 +106,7 @@ jobs:
   upload-to-release-alpha:
     if: github.ref == 'refs/heads/dev'
     name: 📤 上传到 alpha 版本 (Upload to alpha release)
-    needs: commit-build
+    needs: auto-build
     runs-on: ubuntu-22.04
     steps:
       - name: 下载 Artifact (Download Artifact)
