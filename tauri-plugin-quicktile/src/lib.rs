@@ -31,7 +31,8 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
             commands::ping,
             commands::show_toast,
             commands::scan_media_file,
-            commands::exit
+            commands::exit,
+            commands::is_foreground
         ])
         .setup(|app, api| {
             let quicktile = mobile::init(app, api)?;

@@ -43,4 +43,11 @@ impl<R: Runtime> Quicktile<R> {
     pub fn exit(&self) -> crate::Result<()> {
         self.0.run_mobile_plugin("exit", ()).map_err(Into::into)
     }
+
+    pub fn is_foreground(&self) -> crate::Result<bool> {
+        self.0
+            .run_mobile_plugin::<IsForegroundResponse>("isForeground", ())
+            .map(|r| r.is_foreground)
+            .map_err(Into::into)
+    }
 }

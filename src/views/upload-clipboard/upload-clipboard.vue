@@ -33,7 +33,7 @@
 import { showToast } from '@bling-yshs/tauri-plugin-toast'
 import { readText } from '@tauri-apps/plugin-clipboard-manager'
 import { fetch } from '@tauri-apps/plugin-http'
-import { exit } from 'tauri-plugin-quicktile-api'
+import { exit, isForeground } from 'tauri-plugin-quicktile-api'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { createTextClipboardData, type TextClipboardData } from '@/entities/clipboard-data'
@@ -52,8 +52,14 @@ const statusMessage = ref('正在上传剪贴板内容...')
 // 读取剪贴板纯文本并上传到服务器（使用 fetch API）
 async function uploadClipboardText() {
   try {
+    while (!(await isForeground())) {
+      console.log('App 不在前台，延迟 200ms 重试')
+      await new Promise((resolve) => setTimeout(resolve, 200))
+    }
+    console.log('App 在前台，开始读取剪贴板')
     const text = await readText()
     if (text === null || text === undefined) {
+      console.log('剪贴板中没有可用的纯文本')
       throw new Error('剪贴板中没有可用的纯文本')
     }
 

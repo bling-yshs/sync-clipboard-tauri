@@ -36,3 +36,9 @@ pub struct ToastRequest {
 pub struct ToastResponse {
     pub success: bool,
 }
+
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct IsForegroundResponse {
+    pub is_foreground: bool,
+}
