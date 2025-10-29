@@ -100,6 +100,7 @@ import { onMounted, ref } from 'vue'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { createTextClipboardData } from '@/entities/clipboard-data'
 import { type TestResult, useClipboardService } from '@/services/clipboard-service'
 
 // 使用剪贴板服务
@@ -131,27 +132,51 @@ async function testLogin() {
   try {
     // 创建 Basic Auth header
     const credentials = btoa(`${serverConfig.value.username}:${serverConfig.value.password}`)
+    const authorizationHeaders = {
+      Authorization: `Basic ${credentials}`,
+    }
 
     // 发送 GET 请求测试连接
     const response = await fetch(fullFileUrl.value, {
       method: 'GET',
-      headers: {
-        Authorization: `Basic ${credentials}`,
-      },
+      headers: authorizationHeaders,
     })
 
-    if (response.ok) {
-      // 连接成功，保存配置
-      await saveConfig()
-      testResult.value = {
-        success: true,
-        message: '配置已保存，可以开始使用剪贴板同步功能',
+    let successMessage = '配置已保存，可以开始使用剪贴板同步功能'
+
+    if (response.status === 404) {
+      const defaultClipboardData = createTextClipboardData('')
+      const initializationResponse = await fetch(fullFileUrl.value, {
+        method: 'PUT',
+        headers: {
+          ...authorizationHeaders,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(defaultClipboardData),
+      })
+
+      if (!initializationResponse.ok) {
+        testResult.value = {
+          success: false,
+          message: `初始化 SyncClipboard.json 失败: HTTP ${initializationResponse.status}: ${initializationResponse.statusText}`,
+        }
+        return
       }
-    } else {
+
+      successMessage = '已初始化远程 SyncClipboard.json 并保存配置，可以开始使用剪贴板同步功能'
+    } else if (!response.ok) {
       testResult.value = {
         success: false,
         message: `HTTP ${response.status}: ${response.statusText}`,
       }
+      return
+    }
+
+    // 连接成功或初始化成功，保存配置
+    await saveConfig()
+    testResult.value = {
+      success: true,
+      message: successMessage,
     }
     // biome-ignore lint/suspicious/noExplicitAny: any
   } catch (error: any) {
