@@ -122,14 +122,14 @@ jobs:
     needs: auto-build
     runs-on: ubuntu-22.04
     steps:
+      - name: 克隆仓库 (Checkout repo)
+        uses: actions/checkout@v5
+
       - name: 下载 Artifact (Download Artifact)
         uses: actions/download-artifact@v6
         with:
           path: ./download
           merge-multiple: true
-
-      - name: 克隆仓库 (Checkout repo)
-        uses: actions/checkout@v5
 
       - name: 读取 Unreleased Changelog (Read Unreleased Changelog)
         id: changelog_reader
