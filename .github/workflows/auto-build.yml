@@ -20,7 +20,7 @@ jobs:
     name: 🛠️ 自动构建
     runs-on: ${{ matrix.os }}
     steps:
-      - name: 选择 checkout 目标 (decide repo/ref)
+      - name: 选择 checkout 目标 (Decide repo/ref)
         id: pick
         run: |
           if [ "${{ github.event_name }}" = "pull_request_target" ]; then
