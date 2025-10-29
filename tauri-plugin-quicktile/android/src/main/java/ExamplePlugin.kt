@@ -1,6 +1,7 @@
 package com.plugin.quicktile
 
 import android.app.Activity
+import android.app.ActivityManager
 import app.tauri.annotation.Command
 import app.tauri.annotation.InvokeArg
 import app.tauri.annotation.TauriPlugin
@@ -17,6 +18,8 @@ import android.os.Build
 import android.webkit.WebView
 import android.widget.Toast
 import java.net.URL
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 @InvokeArg
 class PingArgs {
   var value: String? = null
@@ -165,4 +168,33 @@ class ExamplePlugin(private val activity: Activity): Plugin(activity) {
     fun exit(invoke: Invoke) {
         activity.finishAndRemoveTask()
     }
+
+    @Command
+    fun isForeground(invoke: Invoke) {
+        val ret = JSObject()
+        ret.put("isForeground", isAppInForeground())
+        invoke.resolve(ret)
+    }
+
+
+private fun isAppInForeground(): Boolean {
+    val procInfo = ActivityManager.RunningAppProcessInfo()
+    ActivityManager.getMyMemoryState(procInfo)
+    val isForegroundProcess =
+        procInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND
+    if (!isForegroundProcess) {
+        return false
+    }
+
+    val isResumed = (activity as? LifecycleOwner)
+        ?.lifecycle
+        ?.currentState
+        ?.isAtLeast(Lifecycle.State.RESUMED)
+        ?: true
+    if (!isResumed) {
+        return false
+    }
+
+    return activity.hasWindowFocus()
+}
 }

@@ -6,6 +6,7 @@ const COMMANDS: &[&str] = &[
     "show_toast",
     "scan_media_file",
     "exit",
+    "is_foreground",
 ];
 
 fn main() {
