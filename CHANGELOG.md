@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.1.2] - 2025-10-30
+
 ### Fixed
 
 - 应用启动时，有概率上传剪贴板失败
@@ -26,6 +28,7 @@
 
 - 第一次正式发布 sync-clipboard-tauri
 
-[Unreleased]: https://github.com/bling-yshs/sync-clipboard-tauri/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/bling-yshs/sync-clipboard-tauri/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/bling-yshs/sync-clipboard-tauri/commits/v0.1.2
 [0.1.1]: https://github.com/bling-yshs/sync-clipboard-tauri/commits/v0.1.1
 [0.1.0]: https://github.com/bling-yshs/sync-clipboard-tauri/commits/v0.1.0
