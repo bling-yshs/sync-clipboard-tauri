@@ -20,8 +20,25 @@ jobs:
     name: 🛠️ 自动构建
     runs-on: ${{ matrix.os }}
     steps:
-      - name: 克隆当前仓库 (Clone current repo)
+      - name: 选择 Checkout 目标 (Decide repo/ref)
+        id: pick
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request_target" ]; then
+            echo "repo=${{ github.event.pull_request.head.repo.full_name }}" >> $GITHUB_OUTPUT
+            echo "ref=${{ github.event.pull_request.head.ref }}" >> $GITHUB_OUTPUT
+          else
+            echo "repo=${{ github.repository }}" >> $GITHUB_OUTPUT
+            echo "ref=${{ github.sha }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 检出代码 (Checkout)
         uses: actions/checkout@v5
+        with:
+          repository: ${{ steps.pick.outputs.repo }}
+          ref: ${{ steps.pick.outputs.ref }}
+          fetch-depth: 0
+          # 对于 PR，建议禁用默认 GITHUB_TOKEN 凭据，降低风险
+          persist-credentials: false
 
       - name: 安装依赖(Install dependencies)
         run: |
@@ -92,7 +109,7 @@ jobs:
           NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
 
       - name: 上传编译结果到 Artifact (Upload build result to Artifact)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           if-no-files-found: ignore
           name: '${{ matrix.target }}-${{ github.sha }}'
@@ -100,19 +117,19 @@ jobs:
             ./src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release.apk
 
   upload-to-release-alpha:
-    if: github.ref == 'refs/heads/dev'
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/dev' }}
     name: 📤 上传到 alpha 版本 (Upload to alpha release)
     needs: auto-build
     runs-on: ubuntu-22.04
     steps:
+      - name: 克隆仓库 (Checkout repo)
+        uses: actions/checkout@v5
+
       - name: 下载 Artifact (Download Artifact)
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           path: ./download
           merge-multiple: true
-
-      - name: 克隆仓库 (Checkout repo)
-        uses: actions/checkout@v5
 
       - name: 读取 Unreleased Changelog (Read Unreleased Changelog)
         id: changelog_reader
@@ -145,4 +162,4 @@ jobs:
           removeArtifacts: true
           prerelease: true
           artifacts: |
-            ./download/**/*.*
+            ./download/**/*

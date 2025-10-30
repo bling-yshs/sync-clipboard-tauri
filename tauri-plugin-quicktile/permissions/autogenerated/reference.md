@@ -11,6 +11,7 @@ Default permissions for the plugin
 - `allow-show-toast`
 - `allow-scan-media-file`
 - `allow-exit`
+- `allow-is-foreground`
 
 ## Permission Table
 
@@ -43,6 +44,32 @@ Enables the exit command without any pre-configured scope.
 <td>
 
 Denies the exit command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`quicktile:allow-is-foreground`
+
+</td>
+<td>
+
+Enables the is_foreground command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`quicktile:deny-is-foreground`
+
+</td>
+<td>
+
+Denies the is_foreground command without any pre-configured scope.
 
 </td>
 </tr>

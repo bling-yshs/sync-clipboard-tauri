@@ -171,11 +171,10 @@ jobs:
           version: 'Unreleased' # 发布时，新版本的内容仍在 Unreleased 块中
           path: './CHANGELOG.md'
 
-      - name: 提取 Unreleased 对比链接 (Extract Unreleased Compare Link)
+      - name: 生成 Full Changelog 链接 (Generate Full Changelog Link)
         id: changelog_link
         run: |
-          URL=$(grep "\[Unreleased\]:" CHANGELOG.md | awk '{print $2}')
-          echo "url=$URL" >> $GITHUB_OUTPUT
+          echo "url=${{ github.server_url }}/${{ github.repository }}/compare/${{ needs.validate.outputs.old_tag }}...${{ needs.validate.outputs.new_tag }}" >> $GITHUB_OUTPUT
 
       - name: 创建 GitHub Release (Create GitHub Release)
         uses: ncipollo/release-action@v1

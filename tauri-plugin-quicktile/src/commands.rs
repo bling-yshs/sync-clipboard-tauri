@@ -1,4 +1,4 @@
-use tauri::{command, AppHandle, Runtime};
+use tauri::{command, AppHandle, Runtime, Window};
 
 use crate::models::*;
 use crate::QuicktileExt;
@@ -31,4 +31,9 @@ pub(crate) async fn show_toast<R: Runtime>(
 #[command]
 pub(crate) async fn exit<R: Runtime>(app: AppHandle<R>) -> Result<()> {
     app.quicktile().exit()
+}
+
+#[command]
+pub(crate) async fn is_foreground<R: Runtime>(app: AppHandle<R>) -> Result<bool> {
+    app.quicktile().is_foreground()
 }

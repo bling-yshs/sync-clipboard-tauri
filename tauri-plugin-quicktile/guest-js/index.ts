@@ -31,3 +31,7 @@ export async function scanMediaFile(path: string): Promise<boolean> {
 export async function exit(): Promise<void> {
   await invoke('plugin:quicktile|exit')
 }
+
+export async function isForeground(): Promise<boolean> {
+    return await invoke('plugin:quicktile|is_foreground')
+}
