@@ -18,6 +18,11 @@ const router = createRouter({
       component: () => import('@/views/upload-clipboard/upload-clipboard.vue'),
     },
     {
+      path: '/upload-share',
+      name: 'upload-share',
+      component: () => import('@/views/upload-share/upload-share.vue'),
+    },
+    {
       path: '/download-clipboard',
       name: 'download-clipboard',
       component: () => import('@/views/download-clipboard/download-clipboard.vue'),

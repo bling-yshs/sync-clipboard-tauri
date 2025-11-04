@@ -53,6 +53,9 @@ importers:
       tauri-plugin-quicktile-api:
         specifier: file:tauri-plugin-quicktile
         version: file:tauri-plugin-quicktile
+      tauri-plugin-sharetarget-api:
+        specifier: file:tauri-plugin-sharetarget
+        version: file:tauri-plugin-sharetarget
       vconsole:
         specifier: ^3.15.1
         version: 3.15.1
@@ -1593,6 +1596,9 @@ packages:
   tauri-plugin-quicktile-api@file:tauri-plugin-quicktile:
     resolution: {directory: tauri-plugin-quicktile, type: directory}
 
+  tauri-plugin-sharetarget-api@file:tauri-plugin-sharetarget:
+    resolution: {directory: tauri-plugin-sharetarget, type: directory}
+
   tinyglobby@0.2.15:
     resolution: {integrity: sha512-j2Zq4NyQYG5XMST4cbs02Ak8iJUdxRM0XI5QyxXuZOzKOINmWurp3smXu3y5wDcJrptwpSjgXHzIQxR0omXljQ==}
     engines: {node: '>=12.0.0'}
@@ -3041,6 +3047,10 @@ snapshots:
       yallist: 5.0.0
 
   tauri-plugin-quicktile-api@file:tauri-plugin-quicktile:
+    dependencies:
+      '@tauri-apps/api': 2.8.0
+
+  tauri-plugin-sharetarget-api@file:tauri-plugin-sharetarget:
     dependencies:
       '@tauri-apps/api': 2.8.0
 
