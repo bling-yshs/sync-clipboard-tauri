@@ -15,7 +15,7 @@
     "@tauri-apps/api": "^2.8.0",
     "@tauri-apps/cli": "^2.8.4",
     "@tauri-apps/plugin-clipboard-manager": "file:plugins-workspace/plugins/clipboard-manager",
-    "@tauri-apps/plugin-deep-link": "~2",
+    "@tauri-apps/plugin-deep-link": "~2.4.5",
     "@tauri-apps/plugin-dialog": "~2.3.3",
     "@tauri-apps/plugin-fs": "~2.4.2",
     "@tauri-apps/plugin-http": "~2.5.2",
