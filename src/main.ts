@@ -6,42 +6,7 @@ import router from './router/router'
 import './assets/main.css'
 import { getInitialShare, listenForShareEvents } from 'tauri-plugin-sharetarget-api'
 import type { ShareEvent } from 'tauri-plugin-sharetarget-api'
-
-// 带超时的Promise包装函数
-function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
-  return Promise.race([
-    promise,
-    new Promise<T>((_, reject) =>
-      setTimeout(() => reject(new Error('操作超时')), timeoutMs)
-    )
-  ])
-}
-
-// 带超时重试的getCurrent包装函数
-async function getCurrentWithRetry(maxRetries = 5, timeoutMs = 2000): Promise<string[] | null> {
-  let attempt = 0
-  
-  while (attempt < maxRetries) {
-    attempt++
-    console.log(`[getCurrent 重试] 第 ${attempt} 次尝试获取启动URL...`)
-    
-    try {
-      const result = await withTimeout(getCurrent(), timeoutMs)
-      console.log(`[getCurrent 重试] ✅ 第 ${attempt} 次尝试成功，耗时 < ${timeoutMs}ms`)
-      return result
-    } catch (error) {
-      if (attempt >= maxRetries) {
-        console.error(`[getCurrent 重试] ❌ 已达到最大重试次数 ${maxRetries}，放弃获取`)
-        throw error
-      }
-      console.warn(`[getCurrent 重试] ⚠️ 第 ${attempt} 次尝试超时或失败，准备重试... 错误:`, error)
-      // 可选：添加重试间隔
-      await new Promise(resolve => setTimeout(resolve, 100))
-    }
-  }
-  
-  return null
-}
+import { isForeground } from 'tauri-plugin-quicktile-api'
 
 // 处理Deep Link URL的函数
 async function handleDeepLinkUrls(urls?: string[] | null) {
@@ -137,7 +102,14 @@ async function handleShareUpload(event: ShareEvent, source: string) {
 // 初始化应用
 async function initApp() {
   console.log('🚀 开始初始化应用...')
-  
+
+  // 等待应用在前台时再执行主逻辑
+  while (!(await isForeground())) {
+    console.log('App 不在前台，延迟 200ms 重试')
+    await new Promise((resolve) => setTimeout(resolve, 200))
+  }
+  console.log('App 在前台，开始初始化')
+
   console.log('步骤1: 创建Vue应用实例')
   let app
   try {
@@ -168,7 +140,7 @@ async function initApp() {
   // 1) 冷启动：获取启动时的URL
   console.log('步骤3: 处理冷启动Deep Link')
   try {
-    const startUrls = await getCurrentWithRetry()
+    const startUrls = await getCurrent()
     console.log('冷启动获取到的URLs:', startUrls)
     await handleDeepLinkUrls(startUrls)
   } catch (error) {
