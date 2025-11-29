@@ -1,6 +1,6 @@
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json", // 建议继承一个基础配置
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "plugins-workspace/plugins/*/guest-js/index.ts", "tauri-plugin-quicktile/guest-js/index.ts"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "plugins-workspace/plugins/*/guest-js/index.ts", "tauri-plugin-quicktile/guest-js/index.ts", "tauri-plugin-sharetarget/guest-js/index.ts"],
   "exclude": ["src-tauri", "node_modules", "dist"],
   "compilerOptions": {
     "composite": true,
@@ -8,7 +8,8 @@
     "paths": {
       "@/*": ["src/*"],
       "@tauri-apps/plugin-clipboard-manager": ["plugins-workspace/plugins/clipboard-manager/guest-js/index.ts"],
-      "tauri-plugin-quicktile-api": ["tauri-plugin-quicktile/guest-js/index.ts"]
+      "tauri-plugin-quicktile-api": ["tauri-plugin-quicktile/guest-js/index.ts"],
+      "tauri-plugin-sharetarget-api": ["tauri-plugin-sharetarget/guest-js/index.ts"]
     },
     "target": "ESNext",
     "useDefineForClassFields": true,

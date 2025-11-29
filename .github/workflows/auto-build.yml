@@ -1,9 +1,8 @@
 name: 🛠️ 自动构建
 
 on:
+  workflow_dispatch:
   push:
-    branches:
-      - dev
   pull_request_target:
     branches:
       - dev
