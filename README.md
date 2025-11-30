@@ -34,6 +34,12 @@
 
     <img height="500" src="https://raw.githubusercontent.com/bling-yshs/ys-image-host/main/img/Screenshot_20251005_133057.jpg"  alt="pic"/>
 
+## 已知问题Q&A
+
+Q: 为什么有时候跳转到上传页面会白屏，没有任何反应
+
+A: tauri deep link 插件的 BUG，暂时无法解决，只能遇到了手动退掉后台再进
+
 ## 项目结构
 
 ```

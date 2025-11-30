@@ -18,6 +18,7 @@
     "fs:default",
     "toast:default",
     "deep-link:default",
+    "sharetarget:default",
     {
       "identifier": "fs:allow-write-text-file",
       "allow": [
@@ -28,6 +29,14 @@
     },
     {
       "identifier": "fs:allow-write-file",
+      "allow": [
+        {
+          "path": "**"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-read-file",
       "allow": [
         {
           "path": "**"

@@ -45,12 +45,15 @@
 <script setup lang="ts">
 import { showToast } from '@bling-yshs/tauri-plugin-toast'
 import { readText } from '@tauri-apps/plugin-clipboard-manager'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Button } from '@/components/ui/button'
 
 const router = useRouter()
 const vConsoleVisible = ref(false)
+
+// vConsole 状态的 localStorage 键名
+const VCONSOLE_STATE_KEY = 'vConsoleVisible'
 
 // 跳转到剪贴板上传页面
 function goToUploadClipboard() {
@@ -79,32 +82,59 @@ async function testButton() {
   console.log(`s: ${s}`)
 }
 
+// 显示 vConsole
+function showVConsole() {
+  // 如果已经存在实例，直接返回
+  if (window.vConsole) {
+    vConsoleVisible.value = true
+    localStorage.setItem(VCONSOLE_STATE_KEY, 'true')
+    return
+  }
+  
+  import('vconsole')
+    .then((VConsole) => {
+      // 创建 vConsole 实例
+      const vConsoleInstance = new VConsole.default()
+      // 将实例保存到 window 对象
+      window.vConsole = vConsoleInstance
+      vConsoleVisible.value = true
+      // 保存状态到 localStorage
+      localStorage.setItem(VCONSOLE_STATE_KEY, 'true')
+      console.log('vConsole 已显示')
+    })
+    .catch((error) => {
+      console.error('加载 vConsole 失败:', error)
+    })
+}
+
+// 隐藏 vConsole
+function hideVConsole() {
+  if (window.vConsole) {
+    window.vConsole.destroy()
+    window.vConsole = null
+  }
+  vConsoleVisible.value = false
+  // 保存状态到 localStorage
+  localStorage.setItem(VCONSOLE_STATE_KEY, 'false')
+  console.log('vConsole 已隐藏')
+}
+
 // 切换 vConsole 显示状态
 function toggleVConsole() {
   if (vConsoleVisible.value) {
-    // 隐藏 vConsole
-    if (window.vConsole) {
-      window.vConsole.destroy()
-      window.vConsole = null
-    }
-    vConsoleVisible.value = false
-    console.log('vConsole 已隐藏')
+    hideVConsole()
   } else {
-    // 显示 vConsole
-    import('vconsole')
-      .then((VConsole) => {
-        // 创建 vConsole 实例
-        const vConsoleInstance = new VConsole.default()
-        // 将实例保存到 window 对象
-        window.vConsole = vConsoleInstance
-        vConsoleVisible.value = true
-        console.log('vConsole 已显示')
-      })
-      .catch((error) => {
-        console.error('加载 vConsole 失败:', error)
-      })
+    showVConsole()
   }
 }
+
+// 组件挂载时检查 vConsole 状态
+onMounted(() => {
+  // 检查是否已经在 main.ts 中创建了 vConsole 实例
+  if (window.vConsole) {
+    vConsoleVisible.value = true
+  }
+})
 </script>
 
 <style scoped>

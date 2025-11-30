@@ -18,6 +18,7 @@ export default defineConfig(async () => ({
         './plugins-workspace/plugins/clipboard-manager/guest-js/index.ts',
       ),
       'tauri-plugin-quicktile-api': path.resolve(__dirname, './tauri-plugin-quicktile/guest-js/index.ts'),
+      'tauri-plugin-sharetarget-api': path.resolve(__dirname, './tauri-plugin-sharetarget/guest-js/index.ts'),
     },
   },
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`

@@ -21,8 +21,8 @@ importers:
         specifier: file:plugins-workspace/plugins/clipboard-manager
         version: file:plugins-workspace/plugins/clipboard-manager
       '@tauri-apps/plugin-deep-link':
-        specifier: ~2
-        version: 2.4.2
+        specifier: ~2.4.5
+        version: 2.4.5
       '@tauri-apps/plugin-dialog':
         specifier: ~2.3.3
         version: 2.3.3
@@ -53,6 +53,9 @@ importers:
       tauri-plugin-quicktile-api:
         specifier: file:tauri-plugin-quicktile
         version: file:tauri-plugin-quicktile
+      tauri-plugin-sharetarget-api:
+        specifier: file:tauri-plugin-sharetarget
+        version: file:tauri-plugin-sharetarget
       vconsole:
         specifier: ^3.15.1
         version: 3.15.1
@@ -852,8 +855,8 @@ packages:
   '@tauri-apps/plugin-clipboard-manager@file:plugins-workspace/plugins/clipboard-manager':
     resolution: {directory: plugins-workspace/plugins/clipboard-manager, type: directory}
 
-  '@tauri-apps/plugin-deep-link@2.4.2':
-    resolution: {integrity: sha512-og3F/wNrTKh1vdgnGr5fG/vJYHvok114PIZy2zjx753GKqHAaZpngaNc6aP3pKnSqvUp3sjgBbPn/DeJ+CXwrA==}
+  '@tauri-apps/plugin-deep-link@2.4.5':
+    resolution: {integrity: sha512-Zf2RTj1D9IQQ45/jqW8XTKvql24HqlPjcpv0mV/O2jHQkNe11HOTZBVj6IK37qs+MWV7xZzcmazx/QVZnhAwaQ==}
 
   '@tauri-apps/plugin-dialog@2.3.3':
     resolution: {integrity: sha512-cWXB9QJDbLIA0v7I5QY183awazBEQNPhp19iPvrMZoJRX8SbFkhWFx1/q7zy7xGpXXzxz29qtq6z21Ho7W5Iew==}
@@ -1593,6 +1596,9 @@ packages:
   tauri-plugin-quicktile-api@file:tauri-plugin-quicktile:
     resolution: {directory: tauri-plugin-quicktile, type: directory}
 
+  tauri-plugin-sharetarget-api@file:tauri-plugin-sharetarget:
+    resolution: {directory: tauri-plugin-sharetarget, type: directory}
+
   tinyglobby@0.2.15:
     resolution: {integrity: sha512-j2Zq4NyQYG5XMST4cbs02Ak8iJUdxRM0XI5QyxXuZOzKOINmWurp3smXu3y5wDcJrptwpSjgXHzIQxR0omXljQ==}
     engines: {node: '>=12.0.0'}
@@ -2314,7 +2320,7 @@ snapshots:
     dependencies:
       '@tauri-apps/api': 2.8.0
 
-  '@tauri-apps/plugin-deep-link@2.4.2':
+  '@tauri-apps/plugin-deep-link@2.4.5':
     dependencies:
       '@tauri-apps/api': 2.8.0
 
@@ -3041,6 +3047,10 @@ snapshots:
       yallist: 5.0.0
 
   tauri-plugin-quicktile-api@file:tauri-plugin-quicktile:
+    dependencies:
+      '@tauri-apps/api': 2.8.0
+
+  tauri-plugin-sharetarget-api@file:tauri-plugin-sharetarget:
     dependencies:
       '@tauri-apps/api': 2.8.0
 
