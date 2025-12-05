@@ -19,7 +19,7 @@
                 @input="saveExitDelay"
                 @blur="validateExitDelay"
                 type="number"
-                min="0"
+                min="-1"
                 step="0.1"
                 placeholder="0"
                 class="border border-gray-300 rounded px-3 py-2 w-24 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -28,7 +28,7 @@
             </div>
           </div>
           <div class="text-xs text-gray-500 ml-24">
-            输入 0 表示立即退出，支持小数（如 1.5）
+            输入 -1 表示不自动退出，0 表示立即退出，支持小数（如 1.5）
           </div>
         </div>
       </div>
@@ -74,12 +74,18 @@ function loadExitDelay() {
 
 // 验证并修正延迟时间输入
 function validateExitDelay() {
-  // 确保值不为负数
-  if (Number.isNaN(exitDelay.value) || exitDelay.value < 0) {
+  // 确保值不为负数（除了 -1）
+  if (Number.isNaN(exitDelay.value) || (exitDelay.value < -1)) {
     exitDelay.value = 0
   }
-  // 保留一位小数
-  exitDelay.value = Math.round(exitDelay.value * 10) / 10
+  // 如果是 -1 到 0 之间的值（不包括 -1），修正为 0
+  if (exitDelay.value > -1 && exitDelay.value < 0) {
+    exitDelay.value = 0
+  }
+  // 保留一位小数（-1 除外）
+  if (exitDelay.value !== -1) {
+    exitDelay.value = Math.round(exitDelay.value * 10) / 10
+  }
   saveExitDelay()
 }
 
