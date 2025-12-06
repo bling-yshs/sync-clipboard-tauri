@@ -29,7 +29,7 @@
       <!-- 显示文件信息 -->
       <div v-if="sharedFileInfo" class="text-sm text-gray-500 mt-4">
         <p>文件名: {{ sharedFileInfo.name }}</p>
-        <p>类型: {{ sharedFileInfo.type }}</p>
+        <p>类型: {{ getFileTypeLabel(sharedFileInfo.type) }}</p>
       </div>
     </div>
   </div>
@@ -58,6 +58,19 @@ const statusMessage = ref('正在接收分享内容...')
 
 // 分享文件信息
 const sharedFileInfo = ref<{ name: string; type: string } | null>(null)
+
+// 获取友好的文件类型标签
+function getFileTypeLabel(mimeType: string): string {
+  if (mimeType.startsWith('image/')) {
+    return '图片'
+  } else if (mimeType.startsWith('video/')) {
+    return '视频'
+  } else if (mimeType.startsWith('text/')) {
+    return '文本'
+  } else {
+    return '文件'
+  }
+}
 
 // 计算文件的 MD5 哈希值
 function calculateMD5(data: Uint8Array): string {
@@ -90,7 +103,10 @@ async function uploadSharedFile(filePath: string, fileName: string, contentType:
 
     // 根据 MIME 类型判断是图片还是普通文件
     const isImage = contentType.startsWith('image/')
+    const isVideo = contentType.startsWith('video/')
     const fileType = isImage ? ClipboardDataType.Image : ClipboardDataType.File
+
+    console.log(`文件类型判断: ${contentType} -> ${isImage ? '图片' : isVideo ? '视频' : '文件'}`)
 
     // 生成新文件名：使用 MD5 + 原始扩展名
     const extension = getFileExtension(fileName)
