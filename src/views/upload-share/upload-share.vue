@@ -163,6 +163,108 @@ async function uploadSharedFile(filePath: string, fileName: string, contentType:
   }
 }
 
+// 处理文本分享
+async function handleTextShare(text: string, contentType: string) {
+  console.log('收到文本分享:', { text, contentType })
+
+  try {
+    // 首先加载配置
+    console.log('正在加载配置...')
+    await loadConfig()
+
+    // 更新状态
+    statusMessage.value = '正在上传文本...'
+    sharedFileInfo.value = {
+      name: text.substring(0, 20) + (text.length > 20 ? '...' : ''),
+      type: contentType,
+    }
+
+    // 上传文本
+    console.log('开始上传分享的文本...')
+    await uploadSharedText(text)
+    await showToast('文本上传成功！🎉', 'long')
+
+    // 上传成功，更新状态
+    uploadStatus.value = 'success'
+    statusMessage.value = '文本上传成功！🎉'
+    console.log('文本上传成功！')
+
+    // 根据设置的延迟时间退出程序
+    const delaySeconds = getExitDelay()
+    if (delaySeconds === -1) {
+      // -1 表示不自动退出，返回主页面
+      console.log('设置为不自动退出，返回主页面')
+      await router.push('/home')
+    } else if (delaySeconds === 0) {
+      await exit()
+    } else {
+      setTimeout(async () => {
+        await exit()
+      }, delaySeconds * 1000)
+    }
+  } catch (error) {
+    console.error('上传流程失败:', error)
+    await showToast(`上传流程失败: ${error}`, 'long')
+    uploadStatus.value = 'error'
+    statusMessage.value = '上传失败，请重试'
+    // 即使失败也跳转回home页面
+    setTimeout(async () => {
+      await router.push('/home')
+    }, 2000)
+  }
+}
+
+// 上传分享的文本到服务器
+async function uploadSharedText(text: string) {
+  try {
+    while (!(await isForeground())) {
+      console.log('App 不在前台，延迟 200ms 重试')
+      await new Promise((resolve) => setTimeout(resolve, 200))
+    }
+    console.log('App 在前台，开始上传文本')
+
+    // 导入 clipboard-service 中的编码函数
+    const { encodeUnicode } = await import('@/services/clipboard-service')
+
+    // 对文本进行 Unicode 编码
+    const encodedText = encodeUnicode(text)
+    console.log(`文本已编码，长度: ${encodedText.length}`)
+
+    // 构建剪贴板数据对象（纯文本类型）
+    const clipboardData = {
+      Type: ClipboardDataType.Text,
+      Clipboard: encodedText,
+    }
+    const jsonStr = JSON.stringify(clipboardData)
+
+    // 创建 Basic Auth header
+    const credentials = btoa(`${serverConfig.value.username}:${serverConfig.value.password}`)
+
+    // 更新 SyncClipboard.json
+    const baseUrl = serverConfig.value.url.replace(/\/+$/, '')
+    const syncClipboardUrl = `${baseUrl}/SyncClipboard.json`
+
+    const jsonResponse = await fetch(syncClipboardUrl, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Basic ${credentials}`,
+        'Content-Type': 'application/json',
+      },
+      body: jsonStr,
+    })
+
+    if (!jsonResponse.ok) {
+      throw new Error(`文本上传失败 HTTP ${jsonResponse.status}: ${jsonResponse.statusText}`)
+    }
+
+    console.log('文本上传成功')
+    return true
+  } catch (err: any) {
+    console.error('上传失败:', err.message || '未知错误')
+    throw err
+  }
+}
+
 // 处理分享事件
 async function handleShareEvent(filePath: string, fileName: string, contentType: string) {
   console.log('收到分享事件:', { filePath, fileName, contentType })
@@ -219,11 +321,22 @@ async function handleShareFromStorage() {
   const shareEventData = sessionStorage.getItem('shareEvent')
   if (shareEventData) {
     try {
-      const { filePath, fileName, contentType } = JSON.parse(shareEventData)
+      const shareData = JSON.parse(shareEventData)
       // 清除已处理的数据
       sessionStorage.removeItem('shareEvent')
-      // 处理分享事件
-      await handleShareEvent(filePath, fileName, contentType)
+
+      // 根据类型分别处理
+      if (shareData.type === 'text') {
+        // 处理文本分享
+        await handleTextShare(shareData.text, shareData.contentType)
+      } else if (shareData.type === 'file') {
+        // 处理文件分享
+        await handleShareEvent(shareData.filePath, shareData.fileName, shareData.contentType)
+      } else {
+        console.error('未知的分享类型:', shareData.type)
+        uploadStatus.value = 'error'
+        statusMessage.value = '未知的分享类型'
+      }
     } catch (error) {
       console.error('处理分享数据失败:', error)
       uploadStatus.value = 'error'

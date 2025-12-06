@@ -15,8 +15,10 @@ export async function ping(value: string): Promise<string | null> {
 export type ShareEvent = {
     /** the name of the intent's target file */
     name?: string,
-    /** the streamable uri to the target contents */
+    /** the streamable uri to the target contents (for file shares) */
     stream?: string,
+    /** the shared text content (for text/plain shares) */
+    text?: string,
     /** the target file's MIME type */
     content_type?: string,
     /** the complete URI for the Android Intent (with action, type, etc.) */

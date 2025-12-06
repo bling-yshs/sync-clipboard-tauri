@@ -105,10 +105,20 @@ fun intentToJson(intent: Intent): JSObject {
     Log.i("processing", intent.toUri(0))
     json.put("uri", intent.toUri(0))
     json.put("content_type", intent.type)
+
+    // 处理文件分享（图片、视频、文件等）
     val streamUrl = intent.extras?.get("android.intent.extra.STREAM")
     if (streamUrl != null) {
         json.put("stream", streamUrl)
     }
+
+    // 处理纯文本分享
+    val textContent = intent.getStringExtra(Intent.EXTRA_TEXT)
+    if (textContent != null) {
+        json.put("text", textContent)
+        Log.i("ShareTarget", "extracted text content: $textContent")
+    }
+
     return json
 }
 

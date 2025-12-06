@@ -74,19 +74,32 @@ async function handleShareUpload(event: ShareEvent, source: string) {
   try {
     console.log(`[${source}] 收到分享数据:`, JSON.stringify(event))
 
-    const filePath = event.stream || event.uri
-    if (!filePath) {
-      console.error(`[${source}] 分享事件缺少文件路径，无法跳转`)
+    // 判断是文本分享还是文件分享
+    if (event.text) {
+      // 纯文本分享
+      console.log(`[${source}] 检测到纯文本分享`)
+      const shareData = {
+        type: 'text',
+        text: event.text,
+        contentType: event.content_type || 'text/plain',
+      }
+      sessionStorage.setItem('shareEvent', JSON.stringify(shareData))
+      console.log(`[${source}] 文本分享数据已写入 sessionStorage`, shareData)
+    } else if (event.stream) {
+      // 文件分享（图片、视频、文件等）
+      console.log(`[${source}] 检测到文件分享`)
+      const shareData = {
+        type: 'file',
+        filePath: event.stream,
+        fileName: event.name || 'shared_file',
+        contentType: event.content_type || 'application/octet-stream',
+      }
+      sessionStorage.setItem('shareEvent', JSON.stringify(shareData))
+      console.log(`[${source}] 文件分享数据已写入 sessionStorage`, shareData)
+    } else {
+      console.error(`[${source}] 分享事件缺少有效数据（既没有 text 也没有 stream）`)
       return
     }
-
-    const shareData = {
-      filePath,
-      fileName: event.name || 'shared_file',
-      contentType: event.content_type || 'application/octet-stream',
-    }
-    sessionStorage.setItem('shareEvent', JSON.stringify(shareData))
-    console.log(`[${source}] 分享数据已写入 sessionStorage`, shareData)
 
     if (router.currentRoute.value.path !== '/upload-share') {
       console.log(`[${source}] 跳转到 /upload-share`)
