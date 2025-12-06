@@ -22,6 +22,8 @@ pub struct ShareEvent {
     pub stream: Option<String>,
     /// the target file's MIME type
     pub content_type: Option<String>,
+    /// the shared text content (for text/plain shares)
+    pub text: Option<String>,
     /// the complete URI for the Android Intent (with action, type, etc.)
     pub uri: String,
 }

@@ -223,18 +223,12 @@ async function uploadSharedText(text: string) {
     }
     console.log('App 在前台，开始上传文本')
 
-    // 导入 clipboard-service 中的编码函数
-    const { encodeUnicode } = await import('@/services/clipboard-service')
-
-    // 对文本进行 Unicode 编码
-    const encodedText = encodeUnicode(text)
-    console.log(`文本已编码，长度: ${encodedText.length}`)
-
     // 构建剪贴板数据对象（纯文本类型）
     const clipboardData = {
       Type: ClipboardDataType.Text,
-      Clipboard: encodedText,
+      Clipboard: text,
     }
+    console.log(`文本长度: ${text.length}`)
     const jsonStr = JSON.stringify(clipboardData)
 
     // 创建 Basic Auth header
