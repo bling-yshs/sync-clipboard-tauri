@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Flutter 默认的启动主题 -->
+    <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">@drawable/launch_background</item>
+    </style>
+
+    <!-- Flutter 默认的正常主题 -->
+    <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">?android:colorBackground</item>
+    </style>
+
+    <!-- ✅ 给 TileActionActivity 用的透明 + 无动画主题 -->
+    <style name="Theme.TransparentTile" parent="@android:style/Theme.Translucent.NoTitleBar">
+        <!-- 关键：关掉窗口自己的切换动画 -->
+        <item name="android:windowAnimationStyle">@null</item>
+
+        <!-- 透明配置 -->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        
+        <!-- 改为 false：避免浮动窗口效果（边框透明、中间铺满的问题） -->
+        <!-- 设为 false 可以让窗口全屏透明，配合 Flutter 的透明背景完美显示 -->
+        <item name="android:windowIsFloating">false</item>
+        
+        <!-- 不让背景变暗 -->
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+</resources>
