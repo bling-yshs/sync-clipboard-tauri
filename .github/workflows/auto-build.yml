@@ -50,6 +50,16 @@ jobs:
           cache: true
           flutter-version-file: "pubspec.yaml"
 
+      - name: Gradle 缓存 (Gradle cache)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
       - name: 拉取依赖 (flutter pub get)
         run: flutter pub get
 
