@@ -47,6 +47,7 @@ jobs:
       - name: 安装 Flutter (Set up Flutter)
         uses: subosito/flutter-action@v2
         with:
+          cache: true
           flutter-version-file: "pubspec.yaml"
 
       - name: 拉取依赖 (flutter pub get)
