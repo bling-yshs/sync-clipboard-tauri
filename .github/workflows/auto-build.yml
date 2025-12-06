@@ -59,7 +59,7 @@ jobs:
           FLUTTER_KEYSTORE_PASSWORD: ${{ secrets.FLUTTER_KEYSTORE_PASSWORD }}
           FLUTTER_KEY_ALIAS: ${{ secrets.FLUTTER_KEY_ALIAS }}
         run: |
-          echo "$FLUTTER_ANDROID_KEYSTORE_BASE64" | base64 -d > android/SyncClipboardAndroidKey.jks
+          echo "$FLUTTER_ANDROID_KEYSTORE_BASE64" | base64 -d > android/app/SyncClipboardAndroidKey.jks
           cat > android/key.properties << EOF
           storePassword=$FLUTTER_KEYSTORE_PASSWORD
           keyPassword=$FLUTTER_KEYSTORE_PASSWORD
