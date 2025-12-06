@@ -117,8 +117,9 @@ onMounted(async () => {
     // 根据设置的延迟时间退出程序
     const delaySeconds = getExitDelay()
     if (delaySeconds === -1) {
-      // -1 表示不自动退出
-      console.log('设置为不自动退出，程序将保持运行')
+      // -1 表示不自动退出，返回主页面
+      console.log('设置为不自动退出，返回主页面')
+      await router.push('/home')
     } else if (delaySeconds === 0) {
       await exit()
     } else {
