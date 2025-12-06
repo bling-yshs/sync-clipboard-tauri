@@ -33,10 +33,10 @@ jobs:
           # PR 场景禁用默认 token
           persist-credentials: false
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        with:
-          detached: true
+#      - name: Setup tmate session
+#        uses: mxschmitt/action-tmate@v3
+#        with:
+#          detached: true
 
       - name: 安装 Java (Install Java)
         uses: actions/setup-java@v5
@@ -53,20 +53,19 @@ jobs:
       - name: 拉取依赖 (flutter pub get)
         run: flutter pub get
 
-      # === 如果要做签名发布，解开这一段并按你的 Gradle 配置调整 ===
-      # - name: 创建 keystore (Create keystore)
-      #   env:
-      #     ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-      #     ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-      #   run: |
-      #     mkdir -p android
-      #     echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > android/upload-keystore.jks
-      #     cat > android/key.properties << EOF
-      #     storePassword=$ANDROID_KEYSTORE_PASSWORD
-      #     keyPassword=$ANDROID_KEYSTORE_PASSWORD
-      #     keyAlias=upload
-      #     storeFile=upload-keystore.jks
-      #     EOF
+      - name: 创建签名配置 (Create signing config)
+        env:
+          FLUTTER_ANDROID_KEYSTORE_BASE64: ${{ secrets.FLUTTER_ANDROID_KEYSTORE_BASE64 }}
+          FLUTTER_KEYSTORE_PASSWORD: ${{ secrets.FLUTTER_KEYSTORE_PASSWORD }}
+          FLUTTER_KEY_ALIAS: ${{ secrets.FLUTTER_KEY_ALIAS }}
+        run: |
+          echo "$FLUTTER_ANDROID_KEYSTORE_BASE64" | base64 -d > android/SyncClipboardAndroidKey.jks
+          cat > android/key.properties << EOF
+          storePassword=$FLUTTER_KEYSTORE_PASSWORD
+          keyPassword=$FLUTTER_KEYSTORE_PASSWORD
+          keyAlias=$FLUTTER_KEY_ALIAS
+          storeFile=SyncClipboardAndroidKey.jks
+          EOF
 
       - name: 构建 APK (Build APK)
         run: flutter build apk --release --target-platform android-arm64
