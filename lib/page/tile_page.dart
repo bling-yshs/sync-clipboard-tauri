@@ -30,20 +30,35 @@ class _TileUploadPageState extends State<TileUploadPage> {
     _uploadClipboard();
   }
 
+  /// 轮询获取剪贴板内容，每200毫秒重试一次，最多3秒
+  Future<ClipboardData?> _getClipboardWithRetry() async {
+    const maxAttempts = 15; // 3秒 / 200毫秒 = 15次
+    for (int i = 0; i < maxAttempts; i++) {
+      final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+      if (clipboardData != null && clipboardData.text != null && clipboardData.text!.isNotEmpty) {
+        _log.i('第 ${i + 1} 次尝试获取剪贴板成功');
+        return clipboardData;
+      }
+      _log.d('第 ${i + 1} 次尝试获取剪贴板失败，200毫秒后重试...');
+      await Future.delayed(const Duration(milliseconds: 200));
+    }
+    return null;
+  }
+
   Future<void> _uploadClipboard() async {
     try {
       _log.i('开始上传剪贴板...');
       
-      // 1. 读取系统剪贴板内容
-      final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+      // 轮询获取剪贴板内容
+      final clipboardData = await _getClipboardWithRetry();
       
-      if (clipboardData == null || clipboardData.text == null || clipboardData.text!.isEmpty) {
+      if (clipboardData == null) {
         setState(() {
           _message = '剪贴板为空';
           _isUploading = false;
           _hasError = true;
         });
-        _log.w('剪贴板为空');
+        _log.w('剪贴板为空（已重试3秒）');
         return;
       }
       
@@ -64,17 +79,10 @@ class _TileUploadPageState extends State<TileUploadPage> {
       
       _log.i('上传剪贴板成功');
       
-      setState(() {
-        _message = '剪贴板内容上传成功！🎉';
-        _isUploading = false;
-      });
-      
-      // 显示成功提示
+      // 显示成功提示并立即退出
       Fluttertoast.showToast(
-        msg: '剪贴板内容上传成功！🎉',
+        msg: '剪贴版内容上传成功！🎉',
       );
-      
-      // 立即退出应用
       SystemNavigator.pop();
     } on SyncClipboardException catch (e) {
       _log.e('上传剪贴板失败 - 业务异常', error: e);
@@ -178,17 +186,10 @@ class _TileDownloadPageState extends State<TileDownloadPage> {
           await Clipboard.setData(ClipboardData(text: clipboard.clipboard));
           _log.i('已将文本写入系统剪贴板');
 
-          setState(() {
-            _message = '已将内容写入剪贴板！🎉';
-            _isDownloading = false;
-          });
-          
-          // 显示成功提示
+          // 显示成功提示并立即退出
           Fluttertoast.showToast(
-            msg: '已将内容写入剪贴板！🎉',
+            msg: '已将以下内容写入剪贴版:\n${clipboard.clipboard}',
           );
-          
-          // 立即退出应用
           SystemNavigator.pop();
           break;
 
@@ -238,18 +239,10 @@ class _TileDownloadPageState extends State<TileDownloadPage> {
 
           _log.i('文件已下载到 Download 文件夹: $downloadPath');
 
-          setState(() {
-            _message = '文件已下载！\n$uniqueFilename';
-            _isDownloading = false;
-            _showProgress = false;
-          });
-          
-          // 显示成功提示
+          // 显示成功提示并立即退出
           Fluttertoast.showToast(
             msg: '文件已下载到 Download 文件夹\n$uniqueFilename',
           );
-          
-          // 立即退出应用
           SystemNavigator.pop();
           break;
 
@@ -324,18 +317,11 @@ class _TileDownloadPageState extends State<TileDownloadPage> {
             // 通知 Android 系统扫描整个文件夹
             await MediaScanner.loadMedia(path: extractPath);
 
-            setState(() {
-              _message = '已解压到 Download 文件夹！\n$folderName';
-              _isDownloading = false;
-            });
-            
-            // 显示成功提示
+            // 显示成功提示并立即退出
             Fluttertoast.showToast(
               msg: '已解压到 Download 文件夹！\n$folderName',
               toastLength: Toast.LENGTH_LONG,
             );
-            
-            // 立即退出应用
             SystemNavigator.pop();
           } catch (e) {
             _log.e('解压失败', error: e);
