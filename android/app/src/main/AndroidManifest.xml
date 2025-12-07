@@ -60,7 +60,7 @@
         <service
             android:name=".UploadClipboardTileService"
             android:exported="true"
-            android:icon="@android:drawable/ic_menu_upload"
+            android:icon="@drawable/ic_tile_upload"
             android:label="上传剪贴板"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
@@ -76,7 +76,7 @@
         <service
             android:name=".DownloadClipboardTileService"
             android:exported="true"
-            android:icon="@android:drawable/stat_sys_download"
+            android:icon="@drawable/ic_tile_download"
             android:label="下载剪贴板"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
