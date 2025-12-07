@@ -1,5 +1,8 @@
 # Sync Clipboard Flutter
 
+> [!IMPORTANT]
+> 本项目原先使用 Tauri + Vue 开发，现已迁移至 Flutter。如需查看 Tauri 版本的代码，请切换到 [`archive-tauri`](https://github.com/bling-yshs/sync-clipboard-tauri/tree/archive-tauri) 分支。
+
 ## 项目简介
 
 本项目是一个使用 Flutter 构建的 Material 3 风格的安卓客户端应用，作为 [Jeric-X/SyncClipboard](https://github.com/Jeric-X/SyncClipboard) 项目的配套应用，实现跨设备的剪贴板内容同步功能。
