@@ -55,7 +55,7 @@ dependencies:
   # json
   json_annotation: ^4.9.0
   json_serializable: ^6.11.2
-  # 文件路径
+  # 文件路
   path_provider: ^2.1.5
   # deep_link
   app_links: ^7.0.0
