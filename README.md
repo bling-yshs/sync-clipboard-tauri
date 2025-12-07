@@ -24,7 +24,7 @@
 
     <img height="500" src="assets/config_page.jpg" alt="设置页面"/>
     
-3. 打开控制中心，添加磁贴「剪贴板上传」与「剪贴板下载」
+3. 打开控制中心，添加磁贴「上传剪贴板」与「下载剪贴板」
 
     <img height="500" src="assets/add_tiles.jpg" alt="添加磁贴"/>
     
