@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sync_clipboard_flutter/model/server_config/server_config.dart';
 import 'package:sync_clipboard_flutter/model/clipboard/clipboard.dart';
+import 'package:sync_clipboard_flutter/model/app_settings/app_settings.dart';
 
 /// SyncClipboard API 客户端
 /// 封装了与 SyncClipboard 服务器的所有 HTTP 通信
@@ -11,7 +14,7 @@ class SyncClipboardClient {
   final ServerConfig config;
 
   // 私有构造函数
-  SyncClipboardClient._(this.config) {
+  SyncClipboardClient._(this.config, {bool trustInsecureCert = false}) {
     _dio = Dio(
       BaseOptions(
         baseUrl: _normalizeBaseUrl(config.url),
@@ -21,6 +24,20 @@ class SyncClipboardClient {
         validateStatus: (status) => status != null && status < 500,
       ),
     );
+
+    // 如果开启了信任不安全证书，配置 IOHttpClientAdapter
+    if (trustInsecureCert) {
+      _dio.httpClientAdapter = IOHttpClientAdapter(
+        createHttpClient: () {
+          final client = HttpClient();
+          // 当证书校验失败时，强行接受所有证书
+          // ⚠️ 警告：这会降低安全性，仅建议在开发/测试环境使用
+          client.badCertificateCallback =
+              (X509Certificate cert, String host, int port) => true;
+          return client;
+        },
+      );
+    }
 
     // 添加 HTTP Basic Auth 拦截器
     _dio.interceptors.add(
@@ -37,11 +54,21 @@ class SyncClipboardClient {
   }
 
   /// 创建客户端实例（从 SharedPreferences 自动加载配置）
+  /// 会自动读取 AppSettings 中的 trustInsecureCert 设置
   static Future<SyncClipboardClient> create() async {
     final prefs = await SharedPreferences.getInstance();
+    
+    // 加载服务器配置
     final savedJson = prefs.getString('server_config');
     final config = serverConfigFromJson(savedJson!);
-    return SyncClipboardClient._(config);
+    
+    // 加载应用设置
+    final settingsJson = prefs.getString('app_settings');
+    final settings = settingsJson != null
+        ? appSettingsFromJson(settingsJson)
+        : const AppSettings();
+    
+    return SyncClipboardClient._(config, trustInsecureCert: settings.trustInsecureCert);
   }
 
   /// 规范化 Base URL，确保以 / 结尾
@@ -198,7 +225,7 @@ class SyncClipboardClient {
   ///   - 参数2：总字节数（-1 表示未知）
   /// 
   /// 返回值：
-  /// - 成功时返回文件的字节数据 (List<int>)
+/// - 成功时返回文件的字节数据 `List<int>`
   /// - 失败时抛出异常
   /// 
   /// 可能抛出的异常：
