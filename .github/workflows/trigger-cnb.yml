@@ -1,0 +1,48 @@
+name: 🛠️ Flutter 自动构建
+
+on:
+  push:
+  pull_request_target:
+    branches:
+      - ci/cnb
+
+jobs:
+  trigger-cnb-build:
+    name: 🛠️ 触发 cnb 构建
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: 选择 Checkout 目标 (Decide repo/ref)
+        id: pick
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request_target" ]; then
+            # PR 场景：用 PR 的 head 仓库和分支
+            echo "repo=${{ github.event.pull_request.head.repo.full_name }}" >> $GITHUB_OUTPUT
+            echo "ref=${{ github.event.pull_request.head.ref }}" >> $GITHUB_OUTPUT
+
+            # 对应的 git_url 和 git_branch_name
+            echo "git_url=${{ github.event.pull_request.head.repo.clone_url }}" >> $GITHUB_OUTPUT
+            echo "git_branch_name=${{ github.event.pull_request.head.ref }}" >> $GITHUB_OUTPUT
+          else
+            # push 场景：用当前仓库和分支
+            echo "repo=${{ github.repository }}" >> $GITHUB_OUTPUT
+            # github.ref_name 会直接给出分支名（不带 refs/heads/）
+            echo "ref=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+
+            # 对应的 git_url 和 git_branch_name
+            echo "git_url=${{ github.server_url }}/${{ github.repository }}.git" >> $GITHUB_OUTPUT
+            echo "git_branch_name=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          fi
+      - name: 触发 cnb 构建
+        run: |
+          curl --location --request POST 'https://api.cnb.cool/bling-team/sync-clipboard-flutter-action/-/build/start' \
+          --header 'Content-Type: application/json' \
+          --header 'Authorization: Bearer 2wr1e2dMK02brPWije4KWoGKkeC' \
+          --data-raw '{
+            "branch": "main",
+            "env": {
+              "git_url": "${{steps.pick.outputs.git_url}}",
+              "git_branch": "${{steps.pick.outputs.git_branch_name}}"
+            },
+            "event": "api_trigger_build"
+          }'
