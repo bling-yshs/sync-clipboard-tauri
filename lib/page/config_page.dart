@@ -16,6 +16,7 @@ class _ConfigPageState extends State<ConfigPage> {
   AppSettings _settings = const AppSettings();
   bool _isLoading = true;
   String _version = '';
+  bool _testSwitch = false; // 测试按钮状态
 
   @override
   void initState() {
@@ -95,6 +96,7 @@ class _ConfigPageState extends State<ConfigPage> {
         
         // 信任不安全的 HTTPS 证书
         SwitchListTile(
+          secondary: const Icon(Icons.gpp_maybe),
           title: const Text('信任不安全的 HTTPS 证书'),
           subtitle: const Text('开启后将跳过 HTTPS 证书校验'),
           value: _settings.trustInsecureCert,
@@ -106,16 +108,22 @@ class _ConfigPageState extends State<ConfigPage> {
         
         // 软件版本
         ListTile(
+          leading: const Icon(Icons.memory),
           title: const Text('软件版本'),
           subtitle: Text(_version),
         ),
         
         // 测试按钮
         SwitchListTile(
+          secondary: const Icon(Icons.science),
           title: const Text('测试按钮'),
           subtitle: const Text('没有任何效果'),
-          value: false,
-          onChanged: (value) {},
+          value: _testSwitch,
+          onChanged: (value) {
+            setState(() {
+              _testSwitch = value;
+            });
+          },
         ),
       ],
     );
