@@ -20,7 +20,7 @@
 
 1. 下载最新版本的 [Sync Clipboard Flutter](https://github.com/bling-yshs/sync-clipboard-tauri/releases/latest) 并安装
 
-2. 打开 app，进入设置页面，填写 SyncClipboard 服务器配置（支持 webdav 服务器）
+2. 打开 app，进入设置页面，填写 SyncClipboard 服务器配置（支持 WebDAV 服务器）
 
     <img height="500" src="assets/config_page.jpg" alt="设置页面"/>
     
