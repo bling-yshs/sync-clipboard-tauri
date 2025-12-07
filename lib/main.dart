@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
         }
 
         return MaterialApp.router(
-          title: 'SyncClipboard',
+          title: '同步剪贴板',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             colorScheme: lightColorScheme,
