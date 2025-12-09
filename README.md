@@ -10,18 +10,10 @@
 <br>
 
 <div align="center">
-  <a href="https://github.com/bling-yshs/sync-clipboard-tauri/stargazers">
-    <img src="https://img.shields.io/github/stars/bling-yshs/sync-clipboard-tauri?logo=github&color=yellow" alt="Stars">
-  </a>
-  <a href="https://github.com/bling-yshs/sync-clipboard-tauri/releases/latest">
-    <img src="https://img.shields.io/github/v/release/bling-yshs/sync-clipboard-tauri?label=Release&color=brightgreen" alt="Release">
-  </a>
-  <a href="https://github.com/bling-yshs/sync-clipboard-tauri/releases">
-    <img src="https://img.shields.io/github/downloads/bling-yshs/sync-clipboard-tauri/total.svg?color=blueviolet" alt="Downloads">
-  </a>
-  <a href="https://github.com/bling-yshs/sync-clipboard-tauri/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/bling-yshs/sync-clipboard-tauri.svg?color=orange" alt="License">
-  </a>
+  <a href="https://github.com/bling-yshs/sync-clipboard-tauri/stargazers"><img src="https://img.shields.io/github/stars/bling-yshs/sync-clipboard-tauri?logo=github&color=yellow" alt="Stars"></a>
+  <a href="https://github.com/bling-yshs/sync-clipboard-tauri/releases/latest"><img src="https://img.shields.io/github/v/release/bling-yshs/sync-clipboard-tauri?label=Release&color=brightgreen" alt="Release"></a>
+  <a href="https://github.com/bling-yshs/sync-clipboard-tauri/releases"><img src="https://img.shields.io/github/downloads/bling-yshs/sync-clipboard-tauri/total.svg?color=blueviolet" alt="Downloads"></a>
+  <a href="https://github.com/bling-yshs/sync-clipboard-tauri/blob/main/LICENSE"><img src="https://img.shields.io/github/license/bling-yshs/sync-clipboard-tauri.svg?color=orange" alt="License"></a>
 </div>
 <br>
 
