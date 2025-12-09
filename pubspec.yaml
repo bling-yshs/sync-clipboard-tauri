@@ -98,7 +98,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - icon.png
+    - assets/icon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -130,9 +130,9 @@ flutter:
 flutter_launcher_icons:
   android: true              # 只为 Android 生成图标
   ios: false                 # 不生成 iOS 图标
-  image_path: "icon.png"     # 图标路径
+  image_path: "assets/icon.png"     # 图标路径
 
   # Android 8.0+ 自适应图标配置
   adaptive_icon_background: "#FFFFFF"  # 背景色（白色）
-  adaptive_icon_foreground: "icon.png" # 前景图层
+  adaptive_icon_foreground: "assets/icon.png" # 前景图层
   min_sdk_android: 21        # 最低支持 Android 5.0
