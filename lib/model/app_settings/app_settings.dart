@@ -18,6 +18,10 @@ abstract class AppSettings with _$AppSettings {
     /// 开启后，Dio 请求将不校验 HTTPS 证书
     /// 注意：这会降低安全性，仅建议在开发/测试环境使用
     @Default(false) bool trustInsecureCert,
+    
+    /// 是否已经显示过手动上传提示对话框
+    /// 用户点击"我知道了"后设为 true，后续不再显示
+    @Default(false) bool manualUploadDialogShown,
   }) = _AppSettings;
 
   factory AppSettings.fromJson(Map<String, dynamic> json) => _$AppSettingsFromJson(json);
