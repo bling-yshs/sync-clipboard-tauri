@@ -18,7 +18,8 @@ mixin _$AppSettings {
 /// 是否信任不安全的 HTTPS 证书
 /// 开启后，Dio 请求将不校验 HTTPS 证书
 /// 注意：这会降低安全性，仅建议在开发/测试环境使用
- bool get trustInsecureCert;/// 是否已经显示过手动上传提示对话框
+ bool get trustInsecureCert;/// 启动时自动检查更新
+ bool get autoCheckUpdate;/// 是否已经显示过手动上传提示对话框
 /// 用户点击"我知道了"后设为 true，后续不再显示
  bool get manualUploadDialogShown;
 /// Create a copy of AppSettings
@@ -33,16 +34,16 @@ $AppSettingsCopyWith<AppSettings> get copyWith => _$AppSettingsCopyWithImpl<AppS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettings&&(identical(other.trustInsecureCert, trustInsecureCert) || other.trustInsecureCert == trustInsecureCert)&&(identical(other.manualUploadDialogShown, manualUploadDialogShown) || other.manualUploadDialogShown == manualUploadDialogShown));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettings&&(identical(other.trustInsecureCert, trustInsecureCert) || other.trustInsecureCert == trustInsecureCert)&&(identical(other.autoCheckUpdate, autoCheckUpdate) || other.autoCheckUpdate == autoCheckUpdate)&&(identical(other.manualUploadDialogShown, manualUploadDialogShown) || other.manualUploadDialogShown == manualUploadDialogShown));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,trustInsecureCert,manualUploadDialogShown);
+int get hashCode => Object.hash(runtimeType,trustInsecureCert,autoCheckUpdate,manualUploadDialogShown);
 
 @override
 String toString() {
-  return 'AppSettings(trustInsecureCert: $trustInsecureCert, manualUploadDialogShown: $manualUploadDialogShown)';
+  return 'AppSettings(trustInsecureCert: $trustInsecureCert, autoCheckUpdate: $autoCheckUpdate, manualUploadDialogShown: $manualUploadDialogShown)';
 }
 
 
@@ -53,7 +54,7 @@ abstract mixin class $AppSettingsCopyWith<$Res>  {
   factory $AppSettingsCopyWith(AppSettings value, $Res Function(AppSettings) _then) = _$AppSettingsCopyWithImpl;
 @useResult
 $Res call({
- bool trustInsecureCert, bool manualUploadDialogShown
+ bool trustInsecureCert, bool autoCheckUpdate, bool manualUploadDialogShown
 });
 
 
@@ -70,9 +71,10 @@ class _$AppSettingsCopyWithImpl<$Res>
 
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? trustInsecureCert = null,Object? manualUploadDialogShown = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? trustInsecureCert = null,Object? autoCheckUpdate = null,Object? manualUploadDialogShown = null,}) {
   return _then(_self.copyWith(
 trustInsecureCert: null == trustInsecureCert ? _self.trustInsecureCert : trustInsecureCert // ignore: cast_nullable_to_non_nullable
+as bool,autoCheckUpdate: null == autoCheckUpdate ? _self.autoCheckUpdate : autoCheckUpdate // ignore: cast_nullable_to_non_nullable
 as bool,manualUploadDialogShown: null == manualUploadDialogShown ? _self.manualUploadDialogShown : manualUploadDialogShown // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
@@ -159,10 +161,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool trustInsecureCert,  bool manualUploadDialogShown)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool trustInsecureCert,  bool autoCheckUpdate,  bool manualUploadDialogShown)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AppSettings() when $default != null:
-return $default(_that.trustInsecureCert,_that.manualUploadDialogShown);case _:
+return $default(_that.trustInsecureCert,_that.autoCheckUpdate,_that.manualUploadDialogShown);case _:
   return orElse();
 
 }
@@ -180,10 +182,10 @@ return $default(_that.trustInsecureCert,_that.manualUploadDialogShown);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool trustInsecureCert,  bool manualUploadDialogShown)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool trustInsecureCert,  bool autoCheckUpdate,  bool manualUploadDialogShown)  $default,) {final _that = this;
 switch (_that) {
 case _AppSettings():
-return $default(_that.trustInsecureCert,_that.manualUploadDialogShown);case _:
+return $default(_that.trustInsecureCert,_that.autoCheckUpdate,_that.manualUploadDialogShown);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,10 +202,10 @@ return $default(_that.trustInsecureCert,_that.manualUploadDialogShown);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool trustInsecureCert,  bool manualUploadDialogShown)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool trustInsecureCert,  bool autoCheckUpdate,  bool manualUploadDialogShown)?  $default,) {final _that = this;
 switch (_that) {
 case _AppSettings() when $default != null:
-return $default(_that.trustInsecureCert,_that.manualUploadDialogShown);case _:
+return $default(_that.trustInsecureCert,_that.autoCheckUpdate,_that.manualUploadDialogShown);case _:
   return null;
 
 }
@@ -215,13 +217,15 @@ return $default(_that.trustInsecureCert,_that.manualUploadDialogShown);case _:
 @JsonSerializable()
 
 class _AppSettings implements AppSettings {
-  const _AppSettings({this.trustInsecureCert = false, this.manualUploadDialogShown = false});
+  const _AppSettings({this.trustInsecureCert = false, this.autoCheckUpdate = true, this.manualUploadDialogShown = false});
   factory _AppSettings.fromJson(Map<String, dynamic> json) => _$AppSettingsFromJson(json);
 
 /// 是否信任不安全的 HTTPS 证书
 /// 开启后，Dio 请求将不校验 HTTPS 证书
 /// 注意：这会降低安全性，仅建议在开发/测试环境使用
 @override@JsonKey() final  bool trustInsecureCert;
+/// 启动时自动检查更新
+@override@JsonKey() final  bool autoCheckUpdate;
 /// 是否已经显示过手动上传提示对话框
 /// 用户点击"我知道了"后设为 true，后续不再显示
 @override@JsonKey() final  bool manualUploadDialogShown;
@@ -239,16 +243,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettings&&(identical(other.trustInsecureCert, trustInsecureCert) || other.trustInsecureCert == trustInsecureCert)&&(identical(other.manualUploadDialogShown, manualUploadDialogShown) || other.manualUploadDialogShown == manualUploadDialogShown));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettings&&(identical(other.trustInsecureCert, trustInsecureCert) || other.trustInsecureCert == trustInsecureCert)&&(identical(other.autoCheckUpdate, autoCheckUpdate) || other.autoCheckUpdate == autoCheckUpdate)&&(identical(other.manualUploadDialogShown, manualUploadDialogShown) || other.manualUploadDialogShown == manualUploadDialogShown));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,trustInsecureCert,manualUploadDialogShown);
+int get hashCode => Object.hash(runtimeType,trustInsecureCert,autoCheckUpdate,manualUploadDialogShown);
 
 @override
 String toString() {
-  return 'AppSettings(trustInsecureCert: $trustInsecureCert, manualUploadDialogShown: $manualUploadDialogShown)';
+  return 'AppSettings(trustInsecureCert: $trustInsecureCert, autoCheckUpdate: $autoCheckUpdate, manualUploadDialogShown: $manualUploadDialogShown)';
 }
 
 
@@ -259,7 +263,7 @@ abstract mixin class _$AppSettingsCopyWith<$Res> implements $AppSettingsCopyWith
   factory _$AppSettingsCopyWith(_AppSettings value, $Res Function(_AppSettings) _then) = __$AppSettingsCopyWithImpl;
 @override @useResult
 $Res call({
- bool trustInsecureCert, bool manualUploadDialogShown
+ bool trustInsecureCert, bool autoCheckUpdate, bool manualUploadDialogShown
 });
 
 
@@ -276,9 +280,10 @@ class __$AppSettingsCopyWithImpl<$Res>
 
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? trustInsecureCert = null,Object? manualUploadDialogShown = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? trustInsecureCert = null,Object? autoCheckUpdate = null,Object? manualUploadDialogShown = null,}) {
   return _then(_AppSettings(
 trustInsecureCert: null == trustInsecureCert ? _self.trustInsecureCert : trustInsecureCert // ignore: cast_nullable_to_non_nullable
+as bool,autoCheckUpdate: null == autoCheckUpdate ? _self.autoCheckUpdate : autoCheckUpdate // ignore: cast_nullable_to_non_nullable
 as bool,manualUploadDialogShown: null == manualUploadDialogShown ? _self.manualUploadDialogShown : manualUploadDialogShown // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
