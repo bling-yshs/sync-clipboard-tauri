@@ -63,6 +63,9 @@
   <img height="500" src="assets/readme/use_tiles.jpg" alt="使用磁贴"/>
 </div>
 
+> [!TIP]
+> 您可以从相册或文件管理器中**长按文件**，选择 **分享** 到本 App 来上传文件
+
 ## 📂 项目结构
 
 ```
