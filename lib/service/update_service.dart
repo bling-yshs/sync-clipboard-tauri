@@ -32,7 +32,7 @@ class UpdateCheckResult {
 class UpdateService {
   static const List<String> _updateUrls = [
     'https://github.com/bling-yshs/sync-clipboard-flutter/releases/latest/download/update.json',
-    'https://www.ystech.top/sync/update.json',
+    'https://cnb.cool/bling-team/sync-clipboard-flutter-action/-/releases/latest/download/update.json',
   ];
 
   /// 获取 APK 保存路径
