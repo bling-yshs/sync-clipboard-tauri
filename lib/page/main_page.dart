@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'home_page.dart';
 import 'config_page.dart';
 import 'debug_page.dart';
+import 'package:sync_clipboard_flutter/model/app_settings/app_settings.dart';
+import 'package:sync_clipboard_flutter/service/update_service.dart';
+import 'package:sync_clipboard_flutter/widget/update_dialog.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -26,6 +30,71 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: _selectedIndex);
+    // 主页启动时检查更新
+    _checkForUpdate();
+  }
+
+  /// 检查更新
+  Future<void> _checkForUpdate() async {
+    // 先检查设置是否启用自动检查更新
+    final prefs = await SharedPreferences.getInstance();
+    final settingsJson = prefs.getString('app_settings');
+    if (settingsJson != null) {
+      try {
+        final settings = appSettingsFromJson(settingsJson);
+        if (!settings.autoCheckUpdate) {
+          return; // 用户关闭了自动检查更新
+        }
+      } catch (e) {
+        // 解析失败，继续检查更新
+      }
+    }
+
+    final result = await UpdateService.checkForUpdate();
+    if (result != null && mounted) {
+      showGeneralDialog(
+        context: context,
+        barrierDismissible: !result.isForced,
+        barrierLabel: '关闭',
+        barrierColor: Colors.black54,
+        transitionDuration: const Duration(milliseconds: 350),
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return UpdateDialog(
+            updateInfo: result.updateInfo,
+            isForced: result.isForced,
+            cachedApkPath: result.cachedApkPath,
+          );
+        },
+        transitionBuilder: (context, animation, secondaryAnimation, child) {
+          // 从上往下滑入 + 淡入 + 轻微缩放
+          final curvedAnimation = CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeOutCubic,
+          );
+
+          final slideAnimation = Tween<Offset>(
+            begin: const Offset(0, -0.15), // 从上方偏移
+            end: Offset.zero,
+          ).animate(curvedAnimation);
+
+          final scaleAnimation = Tween<double>(
+            begin: 0.95,
+            end: 1.0,
+          ).animate(curvedAnimation);
+
+          return SlideTransition(
+            position: slideAnimation,
+            child: ScaleTransition(
+              scale: scaleAnimation,
+              child: FadeTransition(
+                opacity: curvedAnimation,
+                child: child,
+              ),
+            ),
+          );
+        },
+      );
+    }
   }
 
   @override

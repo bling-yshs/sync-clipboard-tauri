@@ -18,6 +18,8 @@ abstract class AppSettings with _$AppSettings {
     /// 开启后，Dio 请求将不校验 HTTPS 证书
     /// 注意：这会降低安全性，仅建议在开发/测试环境使用
     @Default(false) bool trustInsecureCert,
+    /// 启动时自动检查更新
+    @Default(true) bool autoCheckUpdate,
   }) = _AppSettings;
 
   factory AppSettings.fromJson(Map<String, dynamic> json) => _$AppSettingsFromJson(json);
