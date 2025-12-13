@@ -20,6 +20,9 @@ abstract class AppSettings with _$AppSettings {
     @Default(false) bool trustInsecureCert,
     /// 启动时自动检查更新
     @Default(true) bool autoCheckUpdate,
+    /// 是否已经显示过手动上传提示对话框
+    /// 用户点击"我知道了"后设为 true，后续不再显示
+    @Default(false) bool manualUploadDialogShown,
   }) = _AppSettings;
 
   factory AppSettings.fromJson(Map<String, dynamic> json) => _$AppSettingsFromJson(json);
